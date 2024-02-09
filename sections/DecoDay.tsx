@@ -31,12 +31,15 @@ export default function DecoDay({
             class="absolute inset-0 flex justify-end"
             style="right: -300px; top: -150px"
           >
-            <div class="opacity-50 bg-[#02F67C] w-96 h-96 rounded-full blur-[150px]">
+            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[150px]">
             </div>
-            <div class="opacity-50 bg-[#9900E5] w-96 h-96 rounded-full blur-[150px]">
+            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[150px]">
             </div>
           </div>
-          <h1 class="text-green-500 text-center text-4xl">
+          <h1
+            style={`backdrop-filter: drop-shadow(4px 4px 10px var(--a));`}
+            class="text-accent dark:text-secondary text-center text-4xl"
+          >
             {animationsPanel.title}
           </h1>
           <p class="text-white dark:text-black text-center w-3/4 text-2xl">
@@ -193,7 +196,9 @@ export default function DecoDay({
           </button>
           <span>
             Don't have an invite? Join our{" "}
-            <a href="/" class="text-accent-content">waiting list</a>.
+            <a href="/" class="text-accent dark:text-secondary">
+              waiting list
+            </a>.
           </span>
         </div>
       </div>

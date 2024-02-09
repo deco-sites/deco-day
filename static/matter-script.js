@@ -11,8 +11,6 @@ document.getElementById('toggle').addEventListener('change', (e) => {
     }
 });
 
-const sleep = ms => new Promise(r => setTimeout(r, ms));
-
 var VIEW = {};
 VIEW.SAFE_WIDTH = window.innerWidth / 2;
 VIEW.SAFE_HEIGHT = window.innerHeight;

@@ -41,7 +41,7 @@ export default function Slide({
     );
   });
   return (
-    <div class="bg-secondary relative w-full overflow-hidden h-11">
+    <div class="relative w-full overflow-hidden h-11">
       <div class="animate-sliding absolute top-0 left-0 flex flex-nowrap h-11">
         {slideContent}
       </div>
