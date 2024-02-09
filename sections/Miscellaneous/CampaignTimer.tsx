@@ -98,7 +98,7 @@ function CampaignTimer({
     <div class="flex flex-col items-center">
       <span class="countdown font-normal text-xl lg:text-2xl">
         <span
-          class="md:text-8xl text-6xl font-thin text-base-content tracking-[-3px]"
+          class="md:text-8xl text-6xl font-thin text-base-content dark:text-white tracking-[-3px]"
           id={`${id}::${time}`}
         />
       </span>

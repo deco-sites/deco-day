@@ -21,10 +21,10 @@ export default function Slide({
 }: Props) {
   const slideContent = content?.map(({ label, icon, repeat = 1 }) => {
     return (
-      <div class="flex items-center gap-x-10 mx-4">
+      <div class="flex items-center gap-x-10 mx-4 border-b border-t border-black dark:border-white dark:bg-black dark:text-white">
         {Array(repeat).fill(0).map(() => (
           <>
-            <span class="text-sm font-extralight text-base-content whitespace-nowrap">
+            <span class="text-sm font-extralight text-base-content dark:text-white whitespace-nowrap">
               {label}
             </span>
             {icon && (
