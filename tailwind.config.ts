@@ -4,7 +4,7 @@ export default {
   plugins: [daisyui],
   daisyui: { themes: [], logs: false },
   content: ["./**/*.tsx"],
-  darkMode: 'class',
+  darkMode: "class",
   theme: {
     container: { center: true },
     extend: {
