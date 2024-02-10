@@ -7,14 +7,14 @@ import * as $$$1 from "./loaders/List/Sections.tsx";
 import * as $$$$$$0 from "./sections/Gallery.tsx";
 import * as $$$$$$1 from "./sections/DecoDay.tsx";
 import * as $$$$$$2 from "./sections/Footer/Footer.tsx";
-import * as $$$$$$3 from "./sections/Category/CategoryBanner.tsx";
-import * as $$$$$$4 from "./sections/Category/CategoryList.tsx";
-import * as $$$$$$5 from "./sections/Category/CategoryGrid.tsx";
-import * as $$$$$$6 from "./sections/Images/ShoppableBanner.tsx";
-import * as $$$$$$7 from "./sections/Images/BannerGrid.tsx";
-import * as $$$$$$8 from "./sections/Images/ImageGallery.tsx";
-import * as $$$$$$9 from "./sections/Images/Carousel.tsx";
-import * as $$$$$$10 from "./sections/DecoDayFooter.tsx";
+import * as $$$$$$3 from "./sections/SocialLinks.tsx";
+import * as $$$$$$4 from "./sections/Category/CategoryBanner.tsx";
+import * as $$$$$$5 from "./sections/Category/CategoryList.tsx";
+import * as $$$$$$6 from "./sections/Category/CategoryGrid.tsx";
+import * as $$$$$$7 from "./sections/Images/ShoppableBanner.tsx";
+import * as $$$$$$8 from "./sections/Images/BannerGrid.tsx";
+import * as $$$$$$9 from "./sections/Images/ImageGallery.tsx";
+import * as $$$$$$10 from "./sections/Images/Carousel.tsx";
 import * as $$$$$$11 from "./sections/Layout/Container.tsx";
 import * as $$$$$$12 from "./sections/Layout/Grid.tsx";
 import * as $$$$$$13 from "./sections/Layout/Flex.tsx";
@@ -62,9 +62,9 @@ const manifest = {
   },
   "sections": {
     "deco-sites/deco-day/sections/Animation/Animation.tsx": $$$$$$15,
-    "deco-sites/deco-day/sections/Category/CategoryBanner.tsx": $$$$$$3,
-    "deco-sites/deco-day/sections/Category/CategoryGrid.tsx": $$$$$$5,
-    "deco-sites/deco-day/sections/Category/CategoryList.tsx": $$$$$$4,
+    "deco-sites/deco-day/sections/Category/CategoryBanner.tsx": $$$$$$4,
+    "deco-sites/deco-day/sections/Category/CategoryGrid.tsx": $$$$$$6,
+    "deco-sites/deco-day/sections/Category/CategoryList.tsx": $$$$$$5,
     "deco-sites/deco-day/sections/Content/Benefits.tsx": $$$$$$25,
     "deco-sites/deco-day/sections/Content/BlogPosts.tsx": $$$$$$18,
     "deco-sites/deco-day/sections/Content/CallToAction.tsx": $$$$$$22,
@@ -77,14 +77,13 @@ const manifest = {
     "deco-sites/deco-day/sections/Content/Table.tsx": $$$$$$23,
     "deco-sites/deco-day/sections/Content/Testimonials.tsx": $$$$$$20,
     "deco-sites/deco-day/sections/DecoDay.tsx": $$$$$$1,
-    "deco-sites/deco-day/sections/DecoDayFooter.tsx": $$$$$$10,
     "deco-sites/deco-day/sections/Footer/Footer.tsx": $$$$$$2,
     "deco-sites/deco-day/sections/Gallery.tsx": $$$$$$0,
     "deco-sites/deco-day/sections/Header/Header.tsx": $$$$$$47,
-    "deco-sites/deco-day/sections/Images/BannerGrid.tsx": $$$$$$7,
-    "deco-sites/deco-day/sections/Images/Carousel.tsx": $$$$$$9,
-    "deco-sites/deco-day/sections/Images/ImageGallery.tsx": $$$$$$8,
-    "deco-sites/deco-day/sections/Images/ShoppableBanner.tsx": $$$$$$6,
+    "deco-sites/deco-day/sections/Images/BannerGrid.tsx": $$$$$$8,
+    "deco-sites/deco-day/sections/Images/Carousel.tsx": $$$$$$10,
+    "deco-sites/deco-day/sections/Images/ImageGallery.tsx": $$$$$$9,
+    "deco-sites/deco-day/sections/Images/ShoppableBanner.tsx": $$$$$$7,
     "deco-sites/deco-day/sections/Layout/Container.tsx": $$$$$$11,
     "deco-sites/deco-day/sections/Layout/Flex.tsx": $$$$$$13,
     "deco-sites/deco-day/sections/Layout/Grid.tsx": $$$$$$12,
@@ -108,6 +107,7 @@ const manifest = {
     "deco-sites/deco-day/sections/Schedule.tsx": $$$$$$40,
     "deco-sites/deco-day/sections/Social/InstagramPosts.tsx": $$$$$$42,
     "deco-sites/deco-day/sections/Social/WhatsApp.tsx": $$$$$$41,
+    "deco-sites/deco-day/sections/SocialLinks.tsx": $$$$$$3,
     "deco-sites/deco-day/sections/Theme/Theme.tsx": $$$$$$43,
   },
   "apps": {

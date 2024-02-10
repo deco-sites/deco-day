@@ -21,10 +21,10 @@ export default function Slide({
 }: Props) {
   const slideContent = content?.map(({ label, icon, repeat = 1 }) => {
     return (
-      <div class="flex items-center gap-x-10 mx-4 border-b border-t border-black dark:border-white dark:bg-black dark:text-white">
+      <div class="flex items-center gap-x-10 mx-4 text-base-content">
         {Array(repeat).fill(0).map(() => (
           <>
-            <span class="text-sm font-extralight text-base-content dark:text-white whitespace-nowrap">
+            <span class="text-sm font-extralight whitespace-nowrap">
               {label}
             </span>
             {icon && (
@@ -40,10 +40,11 @@ export default function Slide({
       </div>
     );
   });
+
   return (
     <div class="relative w-full overflow-hidden h-11">
-      <div class="animate-sliding absolute top-0 left-0 flex flex-nowrap h-11">
-        {slideContent}
+      <div class="animate-[sliding_60s_linear_infinite] absolute top-0 left-0 flex flex-nowrap h-11 border-t border-b border-black bg-[#DA8FFF] dark:bg-accent">
+        {Array(20).fill(0).map(() => slideContent)}
       </div>
     </div>
   );

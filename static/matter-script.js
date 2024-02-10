@@ -1,26 +1,22 @@
 import Matter from "https://esm.sh/matter-js@0.19.0";
 
-const daisyElems = document.querySelectorAll('.elem');
 const htmlElement = document.querySelector('html');
 
-document.getElementById('toggle').addEventListener('change', (e) => {   
-    if (e.target.checked) {
-        htmlElement.classList.add('dark');
-    } else {
-        htmlElement.classList.remove('dark');
-    }
-});
+const toggles = document.querySelectorAll('[data-toggle-darkmode]');
 
-var VIEW = {};
-VIEW.SAFE_WIDTH = window.innerWidth / 2;
-VIEW.SAFE_HEIGHT = window.innerHeight;
-VIEW.scale = Math.min((window.innerWidth / 2) / VIEW.SAFE_WIDTH, window.innerHeight / VIEW.SAFE_HEIGHT);;
-VIEW.width    = (window.innerWidth / 2) / VIEW.scale;
-VIEW.height   = window.innerHeight / VIEW.scale;
-VIEW.centerX  = VIEW.width / 2;
-VIEW.centerY  = VIEW.height / 2;
-VIEW.offsetX  = (VIEW.width - VIEW.SAFE_WIDTH) / 2 / VIEW.scale;
-VIEW.offsetY  = (VIEW.height - VIEW.SAFE_HEIGHT) / 2 / VIEW.scale;
+Array.from(toggles).forEach(tgl => {
+    tgl.addEventListener('change', (e) => {   
+        if (e.target.checked) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+    });
+})
+
+function sleep(ms = 0) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 var Engine = Matter.Engine,
         Render = Matter.Render,
@@ -31,6 +27,25 @@ var Engine = Matter.Engine,
         Composite = Matter.Composite,
         Bodies = Matter.Bodies;
 
+let daisyElems = document.querySelectorAll('.elem');
+const bodies = [];
+const VIEW = {};
+
+function setup() {
+    daisyElems = document.querySelectorAll('.elem');
+    const mobile = window.innerWidth < 1080;
+    const innerWidth = mobile ? window.innerWidth : window.innerWidth / 2;
+    VIEW.SAFE_WIDTH = innerWidth;
+    VIEW.SAFE_HEIGHT = window.innerHeight;
+    VIEW.scale = Math.min((innerWidth) / VIEW.SAFE_WIDTH, window.innerHeight / VIEW.SAFE_HEIGHT);;
+    VIEW.width    = (innerWidth) / VIEW.scale;
+    VIEW.height   = window.innerHeight / VIEW.scale;
+    VIEW.centerX  = VIEW.width / 2;
+    VIEW.centerY  = VIEW.height / 2;
+    VIEW.offsetX  = (VIEW.width - VIEW.SAFE_WIDTH) / 2 / VIEW.scale;
+    VIEW.offsetY  = (VIEW.height - VIEW.SAFE_HEIGHT) / 2 / VIEW.scale;
+
+
     // create engine
     var engine = Engine.create(),
         world = engine.world;
@@ -40,7 +55,7 @@ var Engine = Matter.Engine,
         element: document.getElementById('canvas'),
         engine: engine,
         options: {
-            width: window.innerWidth / 2,
+            width: innerWidth,
             height: window.innerHeight,
             showAngleIndicator: false
         }
@@ -52,19 +67,29 @@ var Engine = Matter.Engine,
     var runner = Runner.create();
     Runner.run(runner, engine);
 
-    const bodies = [];
     for (let i = 0; i < daisyElems.length; i++) {
         const elem = daisyElems[i];
 
-        const radius = elem.classList.contains('rounded-full') ? 20 : 4;
+        elem.style.zIndex = 10;
+
+        const isBall = elem.classList.contains('rounded-full');
+
+        const radius = isBall ? 20 : 4;
 
         const body = Bodies.rectangle(
             VIEW.centerX + Math.floor(Math.random() * VIEW.width/2) - VIEW.width/4, //Number(elem.dataset.x),
-            VIEW.centerY + Math.floor(Math.random() * VIEW.height / 2) - VIEW.height / 4, // Number(elem.dataset.y),
+            - (VIEW.centerY + Math.floor(Math.random() * VIEW.height / 2) - VIEW.height / 4) * 2, // Number(elem.dataset.y),
             elem.clientWidth + 5,// * 1.5, // VIEW.width * elem.offsetWidth / window.innerWidth,
             elem.clientHeight + 5,// * 1.5, // VIEW.height * elem.offsetHeight / window.innerHeight,
-            { render: { visible: false }, restitution: 0.4, gravity: .4, friction: 0.4, density: 1, chamfer: { radius } },
+            { render: { visible: true }, restitution: 0.4, gravity: .8, friction: 1, density: 1, chamfer: { radius } },
         );
+
+        if (!isBall) {
+            elem.addEventListener('click', () => {
+                Matter.Body.applyForce(body, body.position, {x: 0, y: 150 });
+            });
+        }
+
         bodies.push(body);
         elem.id = body.id;
     }
@@ -82,11 +107,15 @@ var Engine = Matter.Engine,
     Composite.add(world, [
         // walls
         Bodies.rectangle(VIEW.width / 2, VIEW.height, VIEW.width, 1, { isStatic: true,  }),
-        Bodies.rectangle(VIEW.width / 2, 0, VIEW.width, 1, { isStatic: true }),
         Bodies.rectangle(0, VIEW.width, 1, VIEW.height * 2, { isStatic: true }),
         Bodies.rectangle(VIEW.width, 0, 1, VIEW.height * 2, { isStatic: true }),
-        ...bodies,
     ]);
+
+    bodies.forEach((body, idx) => {
+        setTimeout(() => {
+            Composite.add(world, [body]);
+        }, 1500 + 1500 * idx);
+    });
 
     // add mouse control
     var mouse = Mouse.create(render.canvas),
@@ -110,6 +139,9 @@ var Engine = Matter.Engine,
         min: { x: 0, y: 0 },
         max: { x: VIEW.width, y: VIEW.height }
     });
+}
+
+setup();
 
 window.requestAnimationFrame(update);
 function update() {
@@ -137,3 +169,7 @@ function update() {
     }
     window.requestAnimationFrame(update);
 }
+
+setTimeout(() => {
+    
+}, 500);
