@@ -9,6 +9,7 @@ import { Section } from "deco/blocks/section.ts";
 import type { App as A, AppContext as AC } from "deco/mod.ts";
 import { rgb24 } from "std/fmt/colors.ts";
 import manifest, { Manifest } from "../manifest.gen.ts";
+import { Secret } from "apps/website/loaders/secret.ts";
 
 export type Props = {
   /**
@@ -18,6 +19,9 @@ export type Props = {
    */
   platform: Platform;
   theme?: Section;
+  airtableKey: Secret;
+  airtableBase: string;
+  airtableTable: string;
 } & CommerceProps;
 
 export type Platform =

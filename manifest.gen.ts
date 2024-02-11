@@ -52,6 +52,7 @@ import * as $$$$$$44 from "./sections/Links/LinkTree.tsx";
 import * as $$$$$$45 from "./sections/Links/Shortcuts.tsx";
 import * as $$$$$$46 from "./sections/Newsletter/Newsletter.tsx";
 import * as $$$$$$47 from "./sections/Header/Header.tsx";
+import * as $$$$$$$$$0 from "./actions/submitRsvp.ts";
 import * as $$$$$$$$$$$0 from "./apps/decohub.ts";
 import * as $$$$$$$$$$$1 from "./apps/site.ts";
 
@@ -109,6 +110,9 @@ const manifest = {
     "deco-sites/deco-day/sections/Social/WhatsApp.tsx": $$$$$$41,
     "deco-sites/deco-day/sections/SocialLinks.tsx": $$$$$$3,
     "deco-sites/deco-day/sections/Theme/Theme.tsx": $$$$$$43,
+  },
+  "actions": {
+    "deco-sites/deco-day/actions/submitRsvp.ts": $$$$$$$$$0,
   },
   "apps": {
     "deco-sites/deco-day/apps/decohub.ts": $$$$$$$$$$$0,
