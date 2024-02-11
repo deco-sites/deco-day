@@ -9,10 +9,10 @@ import Schedule, {
 import SlideBanner, {
   Props as SlideBannerProps,
 } from "deco-sites/deco-day/sections/Miscellaneous/Slide.tsx";
-import UiButton from "deco-sites/deco-day/components/ui/Button.tsx";
 import SocialLinks, {
   Props as SocialLinksProps,
 } from "deco-sites/deco-day/sections/SocialLinks.tsx";
+import RSVPInput from "deco-sites/deco-day/islands/RSVPInput.tsx";
 
 /**
  * @title ToggleDarkMode
@@ -204,6 +204,11 @@ export interface Props {
     topButtons: TopButton[];
     ctaText: string;
   };
+  emailInput: {
+    successMessage?: string;
+    errorMessage?: string;
+    placeholder?: string;
+  };
 }
 
 const AnimatedElementMap: Record<
@@ -223,6 +228,7 @@ const AnimatedElementMap: Record<
 export default function DecoDay({
   animationElements,
   infoPanel,
+  emailInput,
 }: Props) {
   return (
     <div class="flex flex-col-reverse lg:flex lg:flex-row h-[200vh] lg:h-screen w-screen overflow-x-hidden">
@@ -233,10 +239,8 @@ export default function DecoDay({
             class="absolute inset-0 flex justify-end"
             style="right: -300px; top: -150px"
           >
-            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[150px]">
-            </div>
-            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[150px]">
-            </div>
+            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[150px]"></div>
+            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[150px]"></div>
           </div>
           <p class="hidden lg:inline text-white dark:text-black text-center w-3/4 text-2xl">
             Join our <strong>Dev Community Day</strong> and meet
@@ -251,9 +255,7 @@ export default function DecoDay({
           />
         </div>
         <div class="z-10">
-          {animationElements.map((elem) => (
-            AnimatedElementMap[elem.id](elem)
-          ))}
+          {animationElements.map((elem) => AnimatedElementMap[elem.id](elem))}
         </div>
       </div>
       <div class="overflow-y-scroll h-screen w-screen lg:w-[50vw] bg-white dark:bg-black py-11 px-6 lg:px-12 dark:text-white">
@@ -298,15 +300,12 @@ export default function DecoDay({
               before March 1st
             </span>
           </p>
-          <div class="flex gap-3">
-            <input
-              placeholder="Your work email"
-              class="input input-bordered w-full rounded-[100px] h-14 flex justify-center items-center placeholder:text-black dark:placeholder:text-white dark:bg-black dark:border-white"
-            />
-            <UiButton class="rounded-[100px] font-normal h-14 bg-black text-white dark:text-black dark:bg-white">
-              {infoPanel.ctaText}
-            </UiButton>
-          </div>
+          <RSVPInput
+            cta={infoPanel.ctaText}
+            placeholder={emailInput?.placeholder}
+            errorMessage={emailInput?.errorMessage}
+            successMessage={emailInput?.successMessage}
+          />
         </div>
         <div class="pt-9 flex justify-center lg:justify-end lg:absolute lg:bottom-4 lg:right-4">
           <SocialLinks {...infoPanel.socialLinks} />
