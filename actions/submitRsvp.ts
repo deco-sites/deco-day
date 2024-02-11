@@ -24,7 +24,7 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
   try {
     const airtableToken = await ctx.airtableKey.get();
 
-    await fetch(
+    const res = await fetch(
       `https://api.airtable.com/v0/${ctx.airtableBase}/${ctx.airtableTable}`,
       {
         method: "POST",
@@ -44,6 +44,13 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
       },
     )
       .then((response) => response.json());
+
+    console.log({
+      res,
+      airtableToken,
+      base: ctx.airtableBase,
+      table: ctx.airtableTable,
+    });
 
     return {
       ok: true,
