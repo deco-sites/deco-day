@@ -86,6 +86,7 @@ function setup() {
 
         if (!isBall) {
             elem.addEventListener('click', () => {
+
                 Matter.Body.applyForce(body, body.position, {x: 0, y: 150 });
             });
         }
@@ -110,6 +111,7 @@ function setup() {
                 document.removeEventListener('mouseup', mouseUpHandler);
 
                 if (isDragging) {
+
                     e.preventDefault();
                     const mouse = Mouse.create();
                     const mouseConstraint = MouseConstraint.create(engine, {
@@ -130,8 +132,59 @@ function setup() {
             document.addEventListener('mouseup', mouseUpHandler);
         });
 
+        let startX, startY;
+
+        elem.addEventListener('touchstart', (e) => {
+            isDragging = false;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        elem.addEventListener('touchmove', (e) => {
+            const currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+
+            const deltaX = currentX - startX;
+            const deltaY = currentY - startY;
+
+            if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                isDragging = true;
+            }
+
+            if (isDragging) {
+                const translationX = (currentX - startX) / VIEW.scale;
+                const translationY = (currentY - startY) / VIEW.scale;
+
+                Matter.Body.translate(body, { x: translationX, y: translationY });
+
+                startX = currentX;
+                startY = currentY;
+            }
+        });
+
+
+        elem.addEventListener('touchend', (e) => {
+
+            if (isDragging) {
+                e.preventDefault();
+                const mouse = Mouse.create(render.canvas);
+                const mouseConstraint = MouseConstraint.create(engine, {
+                    mouse: mouse,
+                    constraint: {
+                        stiffness: 0.2,
+                        render: {
+                            visible: false
+                        }
+                    }
+                });
+                Composite.add(world, mouseConstraint);
+                Render.mouse = mouse;
+            }
+        });
+
         elem.addEventListener('click', (e) => {
             if (isDragging) {
+
                 e.preventDefault();
                 const mouse = Mouse.create();
                 const mouseConstraint = MouseConstraint.create(engine, {

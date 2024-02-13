@@ -240,7 +240,7 @@ export default function DecoDay({
   };
 
   return (
-    <div class="flex flex-col lg:flex-row h-screen w-screen overflow-x-hidden">
+    <div class="flex flex-col lg:flex-row h-screen w-screen overflow-hidden">
       <div class="relative h-screen lg:h-screen w-screen overflow-clip">
         <div id="canvas" class="absolute z-[1]"></div>
         <div class="absolute flex z-[2] pt-6 flex-col items-center gap-4 bg-black dark:bg-white h-screen w-screen">
