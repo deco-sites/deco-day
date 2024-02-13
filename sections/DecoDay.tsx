@@ -236,66 +236,74 @@ export default function DecoDay({
 
   const toggleAgenda = () => {
     agendaVisible.value = !agendaVisible.value;
-    console.log('cliquei');
+    console.log("cliquei");
   };
 
   return (
-    <div class="flex flex-col-reverse lg:flex lg:flex-row h-[200vh] lg:h-screen w-screen overflow-x-hidden">
+    <div class="flex flex-col lg:flex-row h-screen w-screen overflow-x-hidden">
       <div class="relative h-screen lg:h-screen w-screen overflow-clip">
         <div id="canvas" class="absolute z-[1]"></div>
         <div class="absolute flex z-[2] pt-6 flex-col items-center gap-4 bg-black dark:bg-white h-screen w-screen">
-        <div class="w-full flex z-[1]  px-6 justify-between items-start h-[42px]">
-          <Icon id="DecoLogo"/>
-          <UiButton
-            onClick={toggleAgenda}
-            class="border-0 h-[40px] font-normal top-4 right-4 text-[16px] leading-[150%] bg-white text-[#0D1717] px-5 py-2 rounded-[100px]"
-          >
-            Agenda
-          </UiButton>
-          {agendaVisible.value && (
-            <div id="agendaContainer" class="absolute z-10 hidden top-4 right-4 w-1/3 bg-white border border-gray-300 rounded p-4 shadow">
-              <span onClick={toggleAgenda} class="absolute top-2 right-2 cursor-pointer text-gray-500">X</span>
-              <div class="flex flex-col gap-10 items-start pb-16 mb-16">
-                <Schedule {...infoPanel.schedule} />
-              </div>
-              <div class="relative">
-                <div class="absolute z-[1] -rotate-3 w-[150vw] top-[-100px] left-[-30%] lg:left-[-50%]">
-                  <SlideBanner {...infoPanel.slideBanner} />
+          <div class="w-full flex z-[1] px-6 pb-6 justify-between items-start h-[42px]">
+            <Icon id="DecoLogo" sizes="(max-width: 1024px) 151px, 111px" />
+            <UiButton
+              onClick={toggleAgenda}
+              class="border-0 h-[40px] font-normal top-4 right-4 text-[16px] leading-[150%] bg-white text-[#0D1717] px-5 py-2 rounded-[100px]"
+            >
+              Agenda
+            </UiButton>
+            {agendaVisible.value && (
+              <div
+                id="agendaContainer"
+                class="absolute z-10 hidden top-4 right-4 w-1/3 bg-white border border-gray-300 rounded p-4 shadow"
+              >
+                <span
+                  onClick={toggleAgenda}
+                  class="absolute top-2 right-2 cursor-pointer text-gray-500"
+                >
+                  X
+                </span>
+                <div class="flex flex-col gap-10 items-start pb-16 mb-16">
+                  <Schedule {...infoPanel.schedule} />
+                </div>
+                <div class="relative">
+                  <div class="absolute z-[1] -rotate-3 w-[150vw] top-[-100px] left-[-30%] lg:left-[-50%]">
+                    <SlideBanner {...infoPanel.slideBanner} />
+                  </div>
+                </div>
+                <div class="pt-9 flex justify-center lg:justify-end lg:absolute lg:bottom-4 lg:right-4">
+                  <SocialLinks {...infoPanel.socialLinks} />
                 </div>
               </div>
-              <div class="pt-9 flex justify-center lg:justify-end lg:absolute lg:bottom-4 lg:right-4">
-                <SocialLinks {...infoPanel.socialLinks} />
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
           <div
             class="absolute inset-0 flex justify-center"
-            style="right: -50px; top: -150px"
+            style="right: 50px; top: -50px"
           >
-            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[200px]">
+            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[220px]">
             </div>
-            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[200px]">
+            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[220px]">
             </div>
           </div>
           <img
             src="/deco-2.0-new.png"
-            class="w-[25vw] hidden lg:hidden dark:lg:inline"
+            class="w-[80vw] lg:w-[25vw] max-w-[470px] lg:min-w-[470px] inline lg:hidden dark:lg:inline"
           />
           <img
             src="/deco-2.0-new.png"
-            class="w-[25vw] hidden lg:inline dark:lg:hidden"
+            class="w-[80vw] lg:w-[25vw] hidden max-w-[470px] lg:min-w-[470px] lg:inline dark:lg:hidden"
           />
-          <div class="flex flex-col items-center w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
-            <p class="hidden lg:inline text-white dark:text-black text-center w-full text-2xl leading-[150%]">
+          <div class="flex flex-col items-center lg:w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
+            <p class="inline px-4 lg:px-0 text-white dark:text-black text-center w-full text-[20px] lg:text-2xl leading-[150%]">
               Join our <strong>Dev Community Day</strong>{" "}
               and meet the future of webdev
             </p>
-            <div class="z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full border-b border-black dark:border-white">
-              <div class="flex flex-row items-center justify-center w-full gap-4 leading-[150%]">
+            <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full border-b border-black dark:border-white">
+              <div class="flex flex-row items-center justify-center w-full gap-1.5 lg:gap-4 leading-[150%]">
                 {infoPanel.topButtons.map(({ icon, label, url }) => (
                   <a
-                    class={`w-1/2 flex items-center justify-center gap-4 text-[20px] py-4 border rounded-[100px]
+                    class={`w-1/2 flex items-center justify-center gap-[11px] lg:gap-4 text-[12px] lg:text-[20px] py-4 border rounded-[100px]
                             border-[#FFFFFF26] text-white bg-white bg-opacity-5 hover:bg-black
                               `}
                     href={url}

@@ -4,65 +4,92 @@ export type Props = {
   email: string;
 };
 
-const isEmail = (emailInput: string) => {
-  // Regular expression for validating an email
-  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return regex.test(emailInput);
+const isEmailValid = (email: string): boolean => {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+};
+
+const fetchData = async (
+  url: string,
+  method: string,
+  ctx: AppContext,
+  body?: object,
+) => {
+  const airtableToken = await ctx.airtableKey.get();
+
+  const headers = {
+    "Authorization": `Bearer ${airtableToken}`,
+    "Content-Type": "application/json",
+  };
+
+  const options: RequestInit = {
+    method,
+    headers,
+  };
+
+  if (body) {
+    options.body = JSON.stringify(body);
+  }
+
+  const response = await fetch(url, options);
+
+  return response.json();
 };
 
 // TODO: Implement rate-limiter or captcha
-export default (props: Props, _req: Request, _ctx: AppContext) => {
-  const emailInput = props.email;
+export default async (props: Props, _req: Request, ctx: AppContext) => {
+  try {
+    const email = props.email.toLowerCase().trim();
 
-  if (!isEmail(emailInput)) {
+    if (!isEmailValid(email)) {
+      return {
+        ok: false,
+        message: "Invalid input",
+      };
+    }
+
+    const recordsUrl =
+      `https://api.airtable.com/v0/${ctx.airtableBase}/${ctx.airtableTable}`;
+
+    const getRecords = await fetchData(recordsUrl, "GET", ctx, undefined);
+
+    const emails = getRecords.records.map((record: any) => record.fields.Email);
+
+    if (emails.includes(email)) {
+      return {
+        ok: true,
+        status: "waiting-list",
+      };
+    } else {
+      const createRecord = await fetchData(recordsUrl, "POST", ctx, {
+        "records": [
+          {
+            "fields": {
+              "Email": email,
+            },
+          },
+        ],
+      });
+
+      if (createRecord?.error) {
+        return {
+          ok: false,
+          status: "error",
+        };
+      }
+
+      return {
+        ok: true,
+        status: "subscribe",
+      };
+    }
+  } catch (error) {
+    // TODO: How to log to Hyperdx?
+    console.error("error", error);
+
     return {
       ok: false,
-      message: "Invalid input",
+      status: "error",
     };
   }
-
-  // try {
-  setTimeout(() => {
-    console.log("Sending email to", emailInput);
-  }, 20000);
-  // const airtableToken = await ctx.airtableKey.get();
-
-  // await fetch(
-  //   `https://api.airtable.com/v0/${ctx.airtableBase}/${ctx.airtableTable}`,
-  //   {
-  //     method: "POST",
-  //     body: JSON.stringify({
-  //       "records": [
-  //         {
-  //           "fields": {
-  //             "Email": emailInput,
-  //           },
-  //         },
-  //       ],
-  //     }),
-  //     headers: {
-  //       "Authorization": `Bearer ${airtableToken}`,
-  //       "content-type": "application/json",
-  //     },
-  //   },
-  // )
-  //   .then((response) => response.json());
-  if (emailInput === "espera@gmail.com") {
-    return {
-      ok: true,
-      status: "waiting-list",
-    };
-  } else {
-    return {
-      ok: true,
-      status: "subscribe",
-    };
-  }
-  // } catch (_e) {
-  //   // TODO: How to log to Hyperdx?
-
-  //   return {
-  //     ok: false,
-  //   };
-  // }
 };

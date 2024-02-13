@@ -89,29 +89,63 @@ function setup() {
                 Matter.Body.applyForce(body, body.position, {x: 0, y: 150 });
             });
         }
+        
+        let isDragging = false;
+        elem.addEventListener('mousedown', (e) => {
+            isDragging = false;
+            const startX = e.clientX;
+            const startY = e.clientY;
 
-        elem.addEventListener('mousedown', () => {
-            const mouse = Mouse.create();
-            const mouseConstraint = MouseConstraint.create(engine, {
-                mouse: mouse,
-                constraint: {
-                    stiffness: 0.2,
-                    render: {
-                        visible: false
+            const mouseMoveHandler = (event) => {
+                const deltaX = event.clientX - startX;
+                const deltaY = event.clientY - startY;
+
+                if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                    isDragging = true;
+                }
+            };
+
+            const mouseUpHandler = () => {
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+
+                if (isDragging) {
+                    e.preventDefault();
+                    const mouse = Mouse.create();
+                    const mouseConstraint = MouseConstraint.create(engine, {
+                        mouse: mouse,
+                        constraint: {
+                            stiffness: 0.2,
+                            render: {
+                                visible: false
+                            }
+                        }
+                    });
+                    Composite.add(world, mouseConstraint);
+                    Render.mouse = mouse;
+                }
+            };
+
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+        });
+
+        elem.addEventListener('click', (e) => {
+            if (isDragging) {
+                e.preventDefault();
+                const mouse = Mouse.create();
+                const mouseConstraint = MouseConstraint.create(engine, {
+                    mouse: mouse,
+                    constraint: {
+                        stiffness: 0.2,
+                        render: {
+                            visible: false
+                        }
                     }
-                }
-            });
-            Composite.add(world, mouseConstraint);
-            Render.mouse = mouse;
-
-            Events.on(engine, 'beforeUpdate', function (event) {
-                const mousePosition = mouse.position;
-                const bodyPosition = body.position;
-
-                if (mouseConstraint.mouse.button === -1 && Matter.Bounds.contains(body.bounds, mousePosition)) {
-                    Matter.Body.setPosition(body, mousePosition);
-                }
-            });
+                });
+                Composite.add(world, mouseConstraint);
+                Render.mouse = mouse;
+            }
         });
 
         bodies.push(body);
@@ -130,9 +164,12 @@ function setup() {
     
     Composite.add(world, [
         // walls
-        Bodies.rectangle(VIEW.width / 2, VIEW.height, VIEW.width, 1, { isStatic: true,  }),
-        Bodies.rectangle(0, VIEW.width, 1, VIEW.height * 2, { isStatic: true }),
-        Bodies.rectangle(VIEW.width, 0, 1, VIEW.height * 2, { isStatic: true }),
+        // Base
+        Bodies.rectangle(VIEW.width / 2, VIEW.height, window.innerWidth*2, 10, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
+        // Lateral esquerda
+        Bodies.rectangle(0, VIEW.height / 2, 10, VIEW.height * 2, { isStatic: true, render: { visible: true,fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
+        // Lateral direita
+        Bodies.rectangle(window.innerWidth, VIEW.height / 2, 10, VIEW.height * 2, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
     ]);
 
     bodies.forEach((body, idx) => {

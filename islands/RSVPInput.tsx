@@ -69,12 +69,12 @@ export default function RSVPInput({
           value={email.value}
           disabled={loading.value}
           placeholder={placeholder}
-          class="input text-[24px] bg-transparent leading-[34.886px] w-full rounded-[100px] flex justify-center items-center placeholder:text-white dark:placeholder:text-white dark:bg-black"
+          class="input text-[20px] lg:text-[24px] bg-transparent leading-[34.886px] w-full rounded-[100px] flex justify-center items-center text-white placeholder:text-white  dark:bg-black"
         />
         <UiButton
           type="submit"
           loading={loading.value}
-          class={`rounded-[100px] border-0 font-[500] content-center text-[24px] px-[28px] py-[14px] ${
+          class={`rounded-[100px] border-0 font-[500] content-center text-[20px] lg:text-[24px] px-[28px] py-[14px] ${
             statusResponse.value === "waiting-list"
               ? "bg-[#F6D579]"
               : "bg-[#02F67C]"
