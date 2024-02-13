@@ -90,6 +90,30 @@ function setup() {
             });
         }
 
+        elem.addEventListener('mousedown', () => {
+            const mouse = Mouse.create();
+            const mouseConstraint = MouseConstraint.create(engine, {
+                mouse: mouse,
+                constraint: {
+                    stiffness: 0.2,
+                    render: {
+                        visible: false
+                    }
+                }
+            });
+            Composite.add(world, mouseConstraint);
+            Render.mouse = mouse;
+
+            Events.on(engine, 'beforeUpdate', function (event) {
+                const mousePosition = mouse.position;
+                const bodyPosition = body.position;
+
+                if (mouseConstraint.mouse.button === -1 && Matter.Bounds.contains(body.bounds, mousePosition)) {
+                    Matter.Body.setPosition(body, mousePosition);
+                }
+            });
+        });
+
         bodies.push(body);
         elem.id = body.id;
     }
@@ -118,8 +142,10 @@ function setup() {
     });
 
     // add mouse control
-    var mouse = Mouse.create(render.canvas),
-        mouseConstraint = MouseConstraint.create(engine, {
+    var mouse = Mouse.create(render.canvas)
+    mouse.pixelRatio = window.devicePixelRatio || 1;
+
+    var mouseConstraint = MouseConstraint.create(engine, {
             mouse: mouse,
             constraint: {
                 stiffness: 0.2,

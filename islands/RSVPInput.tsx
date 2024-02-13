@@ -5,20 +5,24 @@ import { invoke } from "deco-sites/deco-day/runtime.ts";
 
 interface Props {
   placeholder?: string;
-  cta: string;
-  successMessage?: string;
+  subscribeMessage?: string;
+  waitingMessage?: string;
   errorMessage?: string;
 }
 
 export default function RSVPInput({
   placeholder = "Your work email",
-  successMessage = "Done! You'll later receive an e-mail with details.",
+  subscribeMessage = "We've sent the confirmation to your email.",
+  waitingMessage = "You've joined our waitlist.",
   errorMessage = "Ops, there was an error.",
-  cta,
 }: Props) {
   const email = useSignal("");
   const loading = useSignal(false);
-  const feedbackMessage = useSignal("");
+  const feedbackMessage = useSignal({
+    message: "",
+    buttonMessage: "Save your seat",
+  });
+  const statusResponse = useSignal("");
 
   const onRsvp = useCallback(async () => {
     loading.value = true;
@@ -29,14 +33,31 @@ export default function RSVPInput({
       },
     });
 
-    feedbackMessage.value = invokeResponse.ok ? successMessage : errorMessage;
+    statusResponse.value = invokeResponse.status ?? "";
+    if (invokeResponse.ok) {
+      feedbackMessage.value = invokeResponse.status === "waiting-list"
+        ? {
+          message: waitingMessage,
+          buttonMessage: "Check your email",
+        }
+        : {
+          message: subscribeMessage,
+          buttonMessage: "You're in!",
+        };
+    } else {
+      feedbackMessage.value = {
+        message: errorMessage,
+        buttonMessage: "Try again",
+      };
+    }
+
     loading.value = false;
   }, [email.value]);
 
   return (
-    <div class="flex flex-col gap-3">
+    <div class="flex flex-col gap-3 w-full">
       <form
-        class="flex gap-3"
+        class="flex gap-3 p-2 w-full rounded-[100px] justify-center items-center border border-white border-opacity-15 placeholder:text-white dark:placeholder:text-white bg-white bg-opacity-5 dark:bg-black dark:border-white"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -48,18 +69,24 @@ export default function RSVPInput({
           value={email.value}
           disabled={loading.value}
           placeholder={placeholder}
-          class="input input-bordered w-full rounded-[100px] h-14 flex justify-center items-center placeholder:text-black dark:placeholder:text-white dark:bg-black dark:border-white"
+          class="input text-[24px] bg-transparent leading-[34.886px] w-full rounded-[100px] flex justify-center items-center placeholder:text-white dark:placeholder:text-white dark:bg-black"
         />
         <UiButton
           type="submit"
           loading={loading.value}
-          class="rounded-[100px] font-normal h-14 bg-black text-white dark:text-black dark:bg-white"
+          class={`rounded-[100px] border-0 font-[500] content-center text-[24px] px-[28px] py-[14px] ${
+            statusResponse.value === "waiting-list"
+              ? "bg-[#F6D579]"
+              : "bg-[#02F67C]"
+          } text-black items-center`}
         >
-          {cta}
+          {feedbackMessage.value.buttonMessage}
         </UiButton>
       </form>
       {feedbackMessage.value && (
-        <span class="font-normal">{feedbackMessage.value}</span>
+        <span class="font-normal text-white text-center">
+          {feedbackMessage.value.message}
+        </span>
       )}
     </div>
   );

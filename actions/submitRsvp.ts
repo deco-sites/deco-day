@@ -11,7 +11,7 @@ const isEmail = (emailInput: string) => {
 };
 
 // TODO: Implement rate-limiter or captcha
-export default async (props: Props, _req: Request, ctx: AppContext) => {
+export default (props: Props, _req: Request, _ctx: AppContext) => {
   const emailInput = props.email;
 
   if (!isEmail(emailInput)) {
@@ -21,38 +21,48 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     };
   }
 
-  try {
-    const airtableToken = await ctx.airtableKey.get();
+  // try {
+  setTimeout(() => {
+    console.log("Sending email to", emailInput);
+  }, 20000);
+  // const airtableToken = await ctx.airtableKey.get();
 
-    await fetch(
-      `https://api.airtable.com/v0/${ctx.airtableBase}/${ctx.airtableTable}`,
-      {
-        method: "POST",
-        body: JSON.stringify({
-          "records": [
-            {
-              "fields": {
-                "Email": emailInput,
-              },
-            },
-          ],
-        }),
-        headers: {
-          "Authorization": `Bearer ${airtableToken}`,
-          "content-type": "application/json",
-        },
-      },
-    )
-      .then((response) => response.json());
-
+  // await fetch(
+  //   `https://api.airtable.com/v0/${ctx.airtableBase}/${ctx.airtableTable}`,
+  //   {
+  //     method: "POST",
+  //     body: JSON.stringify({
+  //       "records": [
+  //         {
+  //           "fields": {
+  //             "Email": emailInput,
+  //           },
+  //         },
+  //       ],
+  //     }),
+  //     headers: {
+  //       "Authorization": `Bearer ${airtableToken}`,
+  //       "content-type": "application/json",
+  //     },
+  //   },
+  // )
+  //   .then((response) => response.json());
+  if (emailInput === "espera@gmail.com") {
     return {
       ok: true,
+      status: "waiting-list",
     };
-  } catch (e) {
-    // TODO: How to log to Hyperdx?
-
+  } else {
     return {
-      ok: false,
+      ok: true,
+      status: "subscribe",
     };
   }
+  // } catch (_e) {
+  //   // TODO: How to log to Hyperdx?
+
+  //   return {
+  //     ok: false,
+  //   };
+  // }
 };

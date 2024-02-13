@@ -13,6 +13,8 @@ import SocialLinks, {
   Props as SocialLinksProps,
 } from "deco-sites/deco-day/sections/SocialLinks.tsx";
 import RSVPInput from "deco-sites/deco-day/islands/RSVPInput.tsx";
+import { useSignal } from "@preact/signals";
+import UiButton from "deco-sites/deco-day/components/ui/Button.tsx";
 
 /**
  * @title ToggleDarkMode
@@ -230,85 +232,88 @@ export default function DecoDay({
   infoPanel,
   emailInput,
 }: Props) {
+  const agendaVisible = useSignal(false);
+
+  const toggleAgenda = () => {
+    agendaVisible.value = !agendaVisible.value;
+    console.log('cliquei');
+  };
+
   return (
     <div class="flex flex-col-reverse lg:flex lg:flex-row h-[200vh] lg:h-screen w-screen overflow-x-hidden">
-      <div class="relative h-screen lg:h-screen w-screen lg:w-[50vw] overflow-clip">
+      <div class="relative h-screen lg:h-screen w-screen overflow-clip">
         <div id="canvas" class="absolute z-[1]"></div>
-        <div class="absolute flex z-[2] flex-col items-center pt-12 gap-4 bg-black dark:bg-white h-screen w-screen lg:w-[50vw]">
-          <div
-            class="absolute inset-0 flex justify-end"
-            style="right: -300px; top: -150px"
+        <div class="absolute flex z-[2] pt-6 flex-col items-center gap-4 bg-black dark:bg-white h-screen w-screen">
+        <div class="w-full flex z-[1]  px-6 justify-between items-start h-[42px]">
+          <Icon id="DecoLogo"/>
+          <UiButton
+            onClick={toggleAgenda}
+            class="border-0 h-[40px] font-normal top-4 right-4 text-[16px] leading-[150%] bg-white text-[#0D1717] px-5 py-2 rounded-[100px]"
           >
-            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[150px]"></div>
-            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[150px]"></div>
-          </div>
-          <p class="hidden lg:inline text-white dark:text-black text-center w-3/4 text-2xl">
-            Join our <strong>Dev Community Day</strong> and meet
-          </p>
-          <img
-            src="/deco-2.0.png"
-            class="w-[40vw] hidden lg:hidden dark:lg:inline"
-          />
-          <img
-            src="/deco-2.0-dark.png"
-            class="w-[40vw] hidden lg:inline dark:lg:hidden"
-          />
+            Agenda
+          </UiButton>
+          {agendaVisible.value && (
+            <div id="agendaContainer" class="absolute z-10 hidden top-4 right-4 w-1/3 bg-white border border-gray-300 rounded p-4 shadow">
+              <span onClick={toggleAgenda} class="absolute top-2 right-2 cursor-pointer text-gray-500">X</span>
+              <div class="flex flex-col gap-10 items-start pb-16 mb-16">
+                <Schedule {...infoPanel.schedule} />
+              </div>
+              <div class="relative">
+                <div class="absolute z-[1] -rotate-3 w-[150vw] top-[-100px] left-[-30%] lg:left-[-50%]">
+                  <SlideBanner {...infoPanel.slideBanner} />
+                </div>
+              </div>
+              <div class="pt-9 flex justify-center lg:justify-end lg:absolute lg:bottom-4 lg:right-4">
+                <SocialLinks {...infoPanel.socialLinks} />
+              </div>
+            </div>
+          )}
         </div>
-        <div class="z-10">
+          <div
+            class="absolute inset-0 flex justify-center"
+            style="right: -50px; top: -150px"
+          >
+            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[200px]">
+            </div>
+            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[200px]">
+            </div>
+          </div>
+          <img
+            src="/deco-2.0-new.png"
+            class="w-[25vw] hidden lg:hidden dark:lg:inline"
+          />
+          <img
+            src="/deco-2.0-new.png"
+            class="w-[25vw] hidden lg:inline dark:lg:hidden"
+          />
+          <div class="flex flex-col items-center w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
+            <p class="hidden lg:inline text-white dark:text-black text-center w-full text-2xl leading-[150%]">
+              Join our <strong>Dev Community Day</strong>{" "}
+              and meet the future of webdev
+            </p>
+            <div class="z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full border-b border-black dark:border-white">
+              <div class="flex flex-row items-center justify-center w-full gap-4 leading-[150%]">
+                {infoPanel.topButtons.map(({ icon, label, url }) => (
+                  <a
+                    class={`w-1/2 flex items-center justify-center gap-4 text-[20px] py-4 border rounded-[100px]
+                            border-[#FFFFFF26] text-white bg-white bg-opacity-5 hover:bg-black
+                              `}
+                    href={url}
+                  >
+                    <Icon id={icon} size={20} />
+                    <span>{label}</span>
+                  </a>
+                ))}
+              </div>
+              <RSVPInput
+                placeholder={emailInput?.placeholder}
+                errorMessage={emailInput?.errorMessage}
+              />
+            </div>
+          </div>
+        </div>
+        <div class="z-4">
           {animationElements.map((elem) => AnimatedElementMap[elem.id](elem))}
-        </div>
-      </div>
-      <div class="overflow-y-scroll h-screen w-screen lg:w-[50vw] bg-white dark:bg-black py-11 px-6 lg:px-12 dark:text-white">
-        <div class="flex flex-col gap-10 items-start pb-16 mb-16">
-          <div class="flex flex-col gap-4 lg:hidden">
-            <h4 class="text-2xl">
-              Join our <strong>Dev Community Day</strong> and meet
-            </h4>
-            <img
-              src="/deco-2.0.png"
-              class="w-2/3 inline lg:hidden dark:hidden"
-            />
-            <img
-              src="/deco-2.0-dark.png"
-              class="w-2/3 hidden lg:inline dark:inline"
-            />
-          </div>
-          <div class="flex flex-col gap-3 items-start pb-10 w-full border-b border-black dark:border-white">
-            {infoPanel.topButtons.map(({ icon, label, url }) => (
-              <a
-                class={`flex items-center transition-colors justify-center gap-4 text-2lx h-14 px-5 border rounded-[100px]
-                 border-black hover:text-white hover:bg-black
-                  `}
-                href={url}
-              >
-                <Icon id={icon} size={20} />
-                <span>{label}</span>
-              </a>
-            ))}
-          </div>
-          <Schedule {...infoPanel.schedule} />
-        </div>
-        <div class="relative">
-          <div class="absolute z-[1] -rotate-3 w-[150vw] top-[-100px] left-[-30%] lg:left-[-50%]">
-            <SlideBanner {...infoPanel.slideBanner} />
-          </div>
-        </div>
-        <div class="flex flex-col gap-3 mt-8">
-          <p>
-            RSPV{" "}
-            <span class="text-secondary dark:text-accent">
-              before March 1st
-            </span>
-          </p>
-          <RSVPInput
-            cta={infoPanel.ctaText}
-            placeholder={emailInput?.placeholder}
-            errorMessage={emailInput?.errorMessage}
-            successMessage={emailInput?.successMessage}
-          />
-        </div>
-        <div class="pt-9 flex justify-center lg:justify-end lg:absolute lg:bottom-4 lg:right-4">
-          <SocialLinks {...infoPanel.socialLinks} />
         </div>
       </div>
       <script type="module" src="/matter-script.js" />
