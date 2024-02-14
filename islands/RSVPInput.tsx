@@ -69,7 +69,7 @@ export default function RSVPInput({
           value={email.value}
           disabled={loading.value}
           placeholder={placeholder}
-          class="input pr-0 text-[18px] lg:text-[24px] bg-transparent leading-[34.886px] w-full rounded-[100px] flex justify-center items-center text-white placeholder:text-white dark:placeholder:text-black dark:bg-transparent"
+          class="input pr-0 text-[18px] lg:text-[24px] bg-transparent leading-[34.886px] w-full rounded-[100px] flex justify-center items-center text-white dark:text-black placeholder:text-white dark:placeholder:text-black dark:bg-transparent"
         />
         <UiButton
           type="submit"

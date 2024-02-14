@@ -4,6 +4,9 @@ const htmlElement = document.querySelector('html');
 
 const toggles = document.querySelectorAll('[data-toggle-darkmode]');
 
+const propEditavel = document.querySelector('[data-prop-editavel]').dataset.propEditavel;
+
+
 Array.from(toggles).forEach(tgl => {
     tgl.addEventListener('change', (e) => {   
         if (e.target.checked) {
@@ -83,6 +86,9 @@ function setup() {
             elem.clientHeight + 5,// * 1.5, // VIEW.height * elem.offsetHeight / window.innerHeight,
             { render: { visible: true }, restitution: 0.4, gravity: .8, friction: 1, density: 1, chamfer: { radius } },
         );
+        
+        // Defina o vetor de gravidade no mundo
+        engine.world.gravity.y = propEditavel;
 
         if (!isBall) {
             elem.addEventListener('click', () => {
@@ -228,7 +234,16 @@ function setup() {
     bodies.forEach((body, idx) => {
         setTimeout(() => {
             Composite.add(world, [body]);
-        }, 1500 + 1500 * idx);
+        }, 50 + 0 * idx);
+    });
+
+    const gravityForce = { x: 0, y: propEditavel };
+
+    bodies.forEach(body => {
+        Matter.Body.applyForce(body, body.position, { 
+            x: gravityForce.x, 
+            y: gravityForce.y 
+        });
     });
 
     // add mouse control
@@ -285,7 +300,3 @@ function update() {
     }
     window.requestAnimationFrame(update);
 }
-
-setTimeout(() => {
-    
-}, 500);
