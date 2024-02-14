@@ -6,6 +6,13 @@ const toggles = document.querySelectorAll('[data-toggle-darkmode]');
 
 const propEditavel = document.querySelector('[data-prop-editavel]').dataset.propEditavel;
 
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const floatingElements = document.getElementById('floatingElements');
+        floatingElements.classList.remove('invisible');
+    }, 250);
+});
+
 
 Array.from(toggles).forEach(tgl => {
     tgl.addEventListener('change', (e) => {   

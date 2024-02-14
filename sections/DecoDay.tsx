@@ -468,7 +468,7 @@ export default function DecoDay({
             </div>
           </div>
         </div>
-        <div class="absolute z-0">
+        <div id="floatingElements" class="absolute z-0 invisible">
         {isMobile === 'desktop'
             ? animationElements.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
             : animationElementsMobile.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
