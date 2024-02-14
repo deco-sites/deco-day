@@ -14,7 +14,7 @@ import SocialLinks, {
 } from "deco-sites/deco-day/sections/SocialLinks.tsx";
 import RSVPInput from "deco-sites/deco-day/islands/RSVPInput.tsx";
 import { useSignal } from "@preact/signals";
-import UiButton from "deco-sites/deco-day/components/ui/Button.tsx";
+import ScheduleMenu from "deco-sites/deco-day/islands/ScheduleMenu.tsx";
 
 /**
  * @title ToggleDarkMode
@@ -197,9 +197,17 @@ interface TopButton {
   icon: AvailableIcons;
   url: string;
 }
+
+interface Header{
+  date?: string;
+  loc?: string;
+  fullLoc?: string;
+}
+
 export interface Props {
   animationElements: AnimationElement[];
   infoPanel: {
+    scheduleHeader?: Header;
     schedule: ScheduleProps;
     slideBanner: SlideBannerProps;
     socialLinks: SocialLinksProps;
@@ -242,41 +250,11 @@ export default function DecoDay({
   return (
     <div class="flex flex-col lg:flex-row h-screen w-screen overflow-hidden">
       <div class="relative h-screen lg:h-screen w-screen overflow-clip">
-        <div id="canvas" class="absolute z-[1]"></div>
-        <div class="absolute flex z-[2] pt-6 flex-col items-center gap-4 bg-black dark:bg-white h-screen w-screen">
-          <div class="w-full flex z-[1] px-6 pb-6 justify-between items-start h-[42px]">
-            <Icon id="DecoLogo" sizes="(max-width: 1024px) 151px, 111px" />
-            <UiButton
-              onClick={toggleAgenda}
-              class="border-0 h-[40px] font-normal top-4 right-4 text-[16px] leading-[150%] bg-white text-[#0D1717] px-5 py-2 rounded-[100px]"
-            >
-              Agenda
-            </UiButton>
-            {agendaVisible.value && (
-              <div
-                id="agendaContainer"
-                class="absolute z-10 hidden top-4 right-4 w-1/3 bg-white border border-gray-300 rounded p-4 shadow"
-              >
-                <span
-                  onClick={toggleAgenda}
-                  class="absolute top-2 right-2 cursor-pointer text-gray-500"
-                >
-                  X
-                </span>
-                <div class="flex flex-col gap-10 items-start pb-16 mb-16">
-                  <Schedule {...infoPanel.schedule} />
-                </div>
-                <div class="relative">
-                  <div class="absolute z-[1] -rotate-3 w-[150vw] top-[-100px] left-[-30%] lg:left-[-50%]">
-                    <SlideBanner {...infoPanel.slideBanner} />
-                  </div>
-                </div>
-                <div class="pt-9 flex justify-center lg:justify-end lg:absolute lg:bottom-4 lg:right-4">
-                  <SocialLinks {...infoPanel.socialLinks} />
-                </div>
-              </div>
-            )}
-          </div>
+        <div id="canvas" class="absolute z-[0]"></div>
+        <div class="absolute flex z-[0] pt-6 flex-col items-center gap-4 bg-black dark:bg-white h-screen w-screen">
+            <ScheduleMenu
+              infoPanel={infoPanel}
+            />          
           <div
             class="absolute inset-0 flex justify-center"
             style="right: 50px; top: -50px"
@@ -320,7 +298,7 @@ export default function DecoDay({
             </div>
           </div>
         </div>
-        <div class="z-4">
+        <div class="absolute z-0">
           {animationElements.map((elem) => AnimatedElementMap[elem.id](elem))}
         </div>
       </div>

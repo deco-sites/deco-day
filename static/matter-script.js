@@ -70,7 +70,7 @@ function setup() {
     for (let i = 0; i < daisyElems.length; i++) {
         const elem = daisyElems[i];
 
-        elem.style.zIndex = 10;
+        elem.style.zIndex = 0;
 
         const isBall = elem.classList.contains('rounded-full');
 
