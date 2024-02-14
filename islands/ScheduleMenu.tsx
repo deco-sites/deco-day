@@ -36,10 +36,12 @@ interface Props {
     socialLinks: SocialLinksProps;
     topButtons: TopButton[];
     ctaText: string;
-}
+    }
+    isMobile: string;
 }
 export default function ScheduleMenu({
   infoPanel,
+  isMobile,
 }: Props) {
   const agendaVisible = useSignal(false);
 
@@ -50,11 +52,15 @@ export default function ScheduleMenu({
 
   return (
     <>
-        <div class="w-full flex z-[5] px-4 lg:px-6 pb-6 justify-between items-start h-[42px]">
-          <Icon id="DecoLogo" sizes="(max-width: 1024px) 151px, 111px" />
+        <div class="absolute w-full bg-transparent flex z-[5] px-4 lg:px-6 pt-5 lg:pt-6 pb-6 justify-between items-start h-[42px]">
+        {isMobile === 'desktop' ? (
+            <Icon id="DecoLogo"/>
+        ) : (
+            <Icon id="DecoLogoMobile" />
+        )}
           <UiButton
             onClick={toggleAgenda}
-            class="border-0 h-[40px!important] font-normal top-4 right-4 text-[16px] leading-[150%] bg-white text-[#0D1717] px-4 py-2 rounded-[100px]"
+            class="border-0 h-[40px!important] font-normal top-4 right-4 text-[16px] leading-[150%] bg-white dark:bg-black text-[#0D1717] dark:text-white px-4 py-2 rounded-[100px]"
           >
             Agenda
           </UiButton>

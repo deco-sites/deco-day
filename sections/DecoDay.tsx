@@ -15,6 +15,8 @@ import SocialLinks, {
 import RSVPInput from "deco-sites/deco-day/islands/RSVPInput.tsx";
 import { useSignal } from "@preact/signals";
 import ScheduleMenu from "deco-sites/deco-day/islands/ScheduleMenu.tsx";
+import { AppContext } from "deco-sites/deco-day/apps/site.ts";
+
 
 /**
  * @title ToggleDarkMode
@@ -64,7 +66,7 @@ function Radio({ name }: RadioProps) {
     <input
       type="radio"
       name={name}
-      class="radio w-9 h-9 radio-primary elem absolute rounded-full checked:!bg-black hover:border-white  border-white dark:hover:border-black dark:border-black"
+      class="radio h-8 w-8 lg:w-9 lg:h-9 radio-primary elem absolute rounded-full checked:!bg-black hover:border-white  border-white dark:hover:border-black dark:border-black"
       checked
     />
   );
@@ -85,7 +87,7 @@ function CheckBox({}: CheckBoxProps) {
     <input
       type="checkbox"
       checked
-      class="checkbox border w-14 h-14 elem absolute rounded-xl border-white dark:border-black"
+      class="checkbox border w-10 h-10 lg:w-14 lg:h-14 elem absolute rounded-xl border-white dark:border-black"
     />
   );
 }
@@ -105,7 +107,7 @@ function Toggle({}: ToggleProps) {
     <input
       type="checkbox"
       style={`--tglbg: black; --handleoffset: 50px;`}
-      class="toggle w-[100px] h-[50px] !text-white rounded-xl elem absolute"
+      class="toggle w-[80px] h-[40px] lg:w-[100px] lg:h-[50px] !text-white rounded-xl elem absolute"
       checked
     />
   );
@@ -125,7 +127,7 @@ function Input({}: InputProps) {
   return (
     <input
       type="text"
-      class="elem absolute input input-bordered rounded-xl input-lg"
+      class="elem absolute input input-bordered rounded-xl input-sm lg:input-lg"
       placeholder="Type here"
     />
   );
@@ -153,7 +155,7 @@ function Button({ label, color, backgroundColor }: ButtonProps) {
   return (
     <button
       style={`background-color: ${bg}; color: ${clr};`}
-      class="elem btn border-none absolute btn-lg rounded-xl hover:brightness-[85%]"
+      class="elem btn border-none absolute btn-sm lg:btn-lg rounded-xl hover:brightness-[85%]"
     >
       {label}
     </button>
@@ -175,7 +177,7 @@ function Slider({}: SliderProps) {
     <input
       type="range"
       style={`--range-shdw: black; --fallback-bc: #C9CFCF; --rounded-box: 6px;`}
-      class="elem absolute range w-[300px] border-white"
+      class="elem absolute range w-[200px] lg:w-[300px] border-white"
       min="0"
       max="100"
       value="40"
@@ -198,7 +200,7 @@ interface TopButton {
   url: string;
 }
 
-interface Header{
+interface Header {
   date?: string;
   loc?: string;
   fullLoc?: string;
@@ -206,6 +208,10 @@ interface Header{
 
 export interface Props {
   animationElements: AnimationElement[];
+  /**
+ * @description Elementos Mobile
+ */
+  animationElementsMobile: AnimationElement[];
   infoPanel: {
     scheduleHeader?: Header;
     schedule: ScheduleProps;
@@ -235,33 +241,61 @@ const AnimatedElementMap: Record<
   toggle: Toggle,
 };
 
+export const loader = async (
+  props: Props,
+  req: Request,
+  ctx: AppContext,
+) => {
+
+  const device = ctx.device;
+
+  return{
+    ...props,
+    isMobile: device
+  } 
+}
+
 export default function DecoDay({
   animationElements,
+  animationElementsMobile,
   infoPanel,
   emailInput,
-}: Props) {
-  const agendaVisible = useSignal(false);
-
-  const toggleAgenda = () => {
-    agendaVisible.value = !agendaVisible.value;
-    console.log("cliquei");
+  isMobile,
+}: Omit<Props, "isMobile"> & {
+  animationElements: AnimationElement[];
+  animationElementsMobile?: AnimationElement[];
+  infoPanel: {
+    scheduleHeader?: Header;
+    schedule: ScheduleProps;
+    slideBanner: SlideBannerProps;
+    socialLinks: SocialLinksProps;
+    topButtons: TopButton[];
+    ctaText: string;
   };
+  emailInput: {
+    successMessage?: string;
+    errorMessage?: string;
+    placeholder?: string;
+  };
+  isMobile: string;
+}) {
 
   return (
     <div class="flex flex-col lg:flex-row h-screen w-screen overflow-hidden">
       <div class="relative h-screen lg:h-screen w-screen overflow-clip">
+        <ScheduleMenu
+          infoPanel={infoPanel}
+          isMobile={isMobile}
+        />
         <div id="canvas" class="absolute z-[0]"></div>
-        <div class="absolute flex z-[0] pt-6 flex-col items-center gap-4 bg-black dark:bg-white h-screen w-screen">
-            <ScheduleMenu
-              infoPanel={infoPanel}
-            />          
+        <div class="absolute z-[0] flex flex-col pt-[85px] lg:pt-[65px] items-center gap-4 bg-black dark:bg-white h-screen w-screen">
           <div
             class="absolute inset-0 flex justify-center"
             style="right: 50px; top: -50px"
           >
-            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[220px]">
+            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[200px]">
             </div>
-            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[220px]">
+            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[200px]">
             </div>
           </div>
           <img
@@ -277,12 +311,12 @@ export default function DecoDay({
               Join our <strong>Dev Community Day</strong>{" "}
               and meet the future of webdev
             </p>
-            <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full border-b border-black dark:border-white">
+            <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full">
               <div class="flex flex-row items-center justify-center w-full gap-1.5 lg:gap-4 leading-[150%]">
                 {infoPanel.topButtons.map(({ icon, label, url }) => (
                   <a
                     class={`w-1/2 flex items-center justify-center gap-[11px] lg:gap-4 text-[12px] lg:text-[20px] py-4 border rounded-[100px]
-                            border-[#FFFFFF26] text-white bg-white bg-opacity-5 hover:bg-black
+                            border-[#FFFFFF26] text-white dark:border-black dark:text-black bg-white bg-opacity-5 hover:opacity-50
                               `}
                     href={url}
                   >
@@ -299,7 +333,10 @@ export default function DecoDay({
           </div>
         </div>
         <div class="absolute z-0">
-          {animationElements.map((elem) => AnimatedElementMap[elem.id](elem))}
+        {isMobile === 'desktop'
+            ? animationElements.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
+            : animationElementsMobile.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
+        }
         </div>
       </div>
       <script type="module" src="/matter-script.js" />

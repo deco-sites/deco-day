@@ -48,39 +48,77 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
       };
     }
 
-    const recordsUrl =
-      `https://api.airtable.com/v0/${ctx.airtableBase}/${ctx.airtableTable}`;
+    // Lista de convidados: viwhOXwNV31YMr6ss
+    // Confirmados: viwjTprU7jnuNvjNV
+    // https://airtable.com/developers/web/api/list-records
 
-    const getRecords = await fetchData(recordsUrl, "GET", ctx, undefined);
+    const guestsUrl =
+      `https://api.airtable.com/v0/${ctx.airtableBase}/tblBwp1MowAqOH9y3`;
 
-    const emails = getRecords.records.map((record: any) => record.fields.Email);
+    const subscribesUrl =
+      `https://api.airtable.com/v0/${ctx.airtableBase}/tbllIA3LVVvcgy94h`;
 
-    if (emails.includes(email)) {
+    const [getGuests, getSubscribes] = await Promise.all([
+      fetchData(guestsUrl, "GET", ctx, undefined),
+      fetchData(subscribesUrl, "GET", ctx, undefined),
+    ]);
+
+    const emailsGuests = getGuests.records.map((record: any) =>
+      record.fields.Email
+    );
+    const emailsSubscribes = getSubscribes.records.map((record: any) =>
+      record.fields.Email
+    );
+
+    if (emailsGuests.includes(email)) {
+      if (emailsSubscribes.includes(email)) {
+        // evita duplicação de emails na tabela
+        const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
+          "records": [
+            {
+              "fields": {
+                "Email": email,
+                "Waitlist": "False",
+              },
+            },
+          ],
+        });
+        if (createRecord?.error) {
+          return {
+            ok: false,
+            status: "error",
+          };
+        }
+      }
       return {
         ok: true,
-        status: "waiting-list",
+        status: "subscribe",
       };
     } else {
-      const createRecord = await fetchData(recordsUrl, "POST", ctx, {
-        "records": [
-          {
-            "fields": {
-              "Email": email,
+      if (emailsSubscribes.includes(email)) {
+        // evita duplicação de emails na tabela
+        const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
+          "records": [
+            {
+              "fields": {
+                "Email": email,
+                "Waitlist": "True",
+              },
             },
-          },
-        ],
-      });
+          ],
+        });
 
-      if (createRecord?.error) {
-        return {
-          ok: false,
-          status: "error",
-        };
+        if (createRecord?.error) {
+          return {
+            ok: false,
+            status: "error",
+          };
+        }
       }
 
       return {
         ok: true,
-        status: "subscribe",
+        status: "waiting-list",
       };
     }
   } catch (error) {

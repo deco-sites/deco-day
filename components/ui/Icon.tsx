@@ -4,6 +4,7 @@ import type { JSX } from "preact";
 export type AvailableIcons =
   | "ArrowsPointingOut"
   | "DecoLogo"
+  | "DecoLogoMobile"
   | "2.0-Deco"
   | "Bars3"
   | "ChevronLeft"
