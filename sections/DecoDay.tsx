@@ -155,7 +155,7 @@ function Button({ label, color, backgroundColor }: ButtonProps) {
   return (
     <button
       style={`background-color: ${bg}; color: ${clr};`}
-      class="elem btn border-none absolute btn-sm lg:btn-lg rounded-xl hover:brightness-[85%]"
+      class="elem btn w-[max-content] border-none absolute btn-sm lg:btn-lg rounded-xl hover:brightness-[85%]"
     >
       {label}
     </button>
@@ -217,6 +217,8 @@ export interface Props {
  */
   /** @default 4 */
   gravitySensation?: 1 | 2 | 3 | 4 | 5 | 6 | 7 ;
+  /** @format html */
+  title?: string;
   infoPanel: {
     scheduleHeader?: Header;
     schedule: ScheduleProps;
@@ -266,10 +268,12 @@ export default function DecoDay({
   infoPanel,
   emailInput,
   isMobile,
-  gravitySensation
+  gravitySensation,
+  title
 }: Omit<Props, "isMobile"> & {
   animationElements: AnimationElement[];
   animationElementsMobile?: AnimationElement[];
+  title: string;
   infoPanel: {
     scheduleHeader?: Header;
     schedule: ScheduleProps;
@@ -313,10 +317,12 @@ export default function DecoDay({
             class="w-[80vw] max-w-[304px] lg:max-w-[342px] inline dark:hidden"
           />
           <div class="flex flex-col items-center lg:w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
-            <p class="inline px-4 lg:px-0 text-white dark:text-black text-center w-full text-[20px] lg:text-2xl leading-[150%]">
-              Join our <strong>Dev Community Day</strong>{" "}
-              and meet the future of webdev
-            </p>
+            <div
+              class="inline px-4 lg:px-0 text-white dark:text-black text-center w-full text-[20px] lg:text-2xl leading-[150%]"
+                dangerouslySetInnerHTML={{
+                  __html: title,
+                }}
+            />
             <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full">
               <div class="flex flex-row items-center justify-center w-full gap-1.5 lg:gap-4 leading-[150%]">
                 {infoPanel.topButtons.map(({ icon, label, url }) => (

@@ -12,10 +12,10 @@ const isEmailValid = (email: string): boolean => {
 const fetchData = async (
   url: string,
   method: string,
-  ctx: AppContext,
+  _ctx: AppContext,
   body?: object,
 ) => {
-  const airtableToken = await ctx.airtableKey.get();
+  const airtableToken = Deno.env.get('AIRTABLE_KEY');
 
   const headers = {
     "Authorization": `Bearer ${airtableToken}`,
@@ -71,7 +71,7 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     );
 
     if (emailsGuests.includes(email)) {
-      if (emailsSubscribes.includes(email)) {
+      if (!emailsSubscribes.includes(email)) {
         // evita duplicação de emails na tabela
         const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
           "records": [
@@ -95,7 +95,7 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
         status: "subscribe",
       };
     } else {
-      if (emailsSubscribes.includes(email)) {
+      if (!emailsSubscribes.includes(email)) {
         // evita duplicação de emails na tabela
         const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
           "records": [
