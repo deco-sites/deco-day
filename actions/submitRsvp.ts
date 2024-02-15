@@ -58,7 +58,7 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     const subscribesUrl =
       `https://api.airtable.com/v0/${ctx.airtableBase}/tbllIA3LVVvcgy94h`;
 
-    const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
+    const response_debug = await fetchData(subscribesUrl, "POST", ctx, {
       "records": [
         {
           "fields": {
@@ -68,6 +68,8 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
         },
       ],
     });
+
+    return response_debug;
 
     const [getGuests, getSubscribes] = await Promise.all([
       fetchData(guestsUrl, "GET", ctx, undefined),
