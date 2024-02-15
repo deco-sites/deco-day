@@ -17,7 +17,6 @@ import { useSignal } from "@preact/signals";
 import ScheduleMenu from "deco-sites/deco-day/islands/ScheduleMenu.tsx";
 import { AppContext } from "deco-sites/deco-day/apps/site.ts";
 
-
 /**
  * @title ToggleDarkMode
  */
@@ -209,14 +208,14 @@ interface Header {
 export interface Props {
   animationElements: AnimationElement[];
   /**
- * @description Mobile Elements
- */
+   * @description Mobile Elements
+   */
   animationElementsMobile: AnimationElement[];
   /**
- * @description Select Gravity Level - 1(super slow) to 7(super fast) | Default is 4(Earths Gravity)
- */
+   * @description Select Gravity Level - 1(super slow) to 7(super fast) | Default is 4(Earths Gravity)
+   */
   /** @default 4 */
-  gravitySensation?: 1 | 2 | 3 | 4 | 5 | 6 | 7 ;
+  gravitySensation?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   infoPanel: {
     scheduleHeader?: Header;
     schedule: ScheduleProps;
@@ -246,19 +245,18 @@ const AnimatedElementMap: Record<
   toggle: Toggle,
 };
 
-export const loader = async (
+export const loader = (
   props: Props,
   req: Request,
   ctx: AppContext,
 ) => {
-
   const device = ctx.device;
 
-  return{
+  return {
     ...props,
-    isMobile: device
-  } 
-}
+    isMobile: device,
+  };
+};
 
 export default function DecoDay({
   animationElements,
@@ -266,7 +264,7 @@ export default function DecoDay({
   infoPanel,
   emailInput,
   isMobile,
-  gravitySensation
+  gravitySensation,
 }: Omit<Props, "isMobile"> & {
   animationElements: AnimationElement[];
   animationElementsMobile?: AnimationElement[];
@@ -285,7 +283,6 @@ export default function DecoDay({
   };
   isMobile: string;
 }) {
-
   return (
     <div class="flex flex-col lg:flex-row h-screen w-screen overflow-hidden">
       <div class="relative h-screen lg:h-screen w-screen overflow-clip">
@@ -339,40 +336,43 @@ export default function DecoDay({
           </div>
         </div>
         <div id="floatingElements" class="absolute z-0 invisible">
-        {isMobile === 'desktop'
-            ? animationElements.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
-            : animationElementsMobile.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
-        }
+          {isMobile === "desktop"
+            ? animationElements.map((elem: AnimationElement) =>
+              AnimatedElementMap[elem.id](elem)
+            )
+            : animationElementsMobile.map((elem: AnimationElement) =>
+              AnimatedElementMap[elem.id](elem)
+            )}
         </div>
       </div>
       <script type="module" src="/matter-script.js" />
       {gravitySensation === 1 && (
-      <div class="hidden" data-prop-editavel="0.1">
-      </div>
+        <div class="hidden" data-prop-editavel="0.1">
+        </div>
       )}
       {gravitySensation === 2 && (
-          <div class="hidden" data-prop-editavel="0.3">
-          </div>
+        <div class="hidden" data-prop-editavel="0.3">
+        </div>
       )}
       {gravitySensation === 3 && (
-          <div class="hidden" data-prop-editavel="0.6">
-          </div>
+        <div class="hidden" data-prop-editavel="0.6">
+        </div>
       )}
       {gravitySensation === 4 && (
-          <div class="hidden" data-prop-editavel="1">
-          </div>
+        <div class="hidden" data-prop-editavel="1">
+        </div>
       )}
       {gravitySensation === 5 && (
-          <div class="hidden" data-prop-editavel="1.5">
-          </div>
+        <div class="hidden" data-prop-editavel="1.5">
+        </div>
       )}
       {gravitySensation === 6 && (
-          <div class="hidden" data-prop-editavel="2">
-          </div>
+        <div class="hidden" data-prop-editavel="2">
+        </div>
       )}
       {gravitySensation === 7 && (
-          <div class="hidden" data-prop-editavel="3">
-          </div>
+        <div class="hidden" data-prop-editavel="3">
+        </div>
       )}
     </div>
   );

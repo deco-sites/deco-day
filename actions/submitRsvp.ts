@@ -11,6 +11,12 @@ const isEmailValid = (email: string): boolean => {
 
 const airtableToken = Deno.env.get("AIRTABLE_KEY");
 
+type AirtableRecord = {
+  fields: {
+    Email: string;
+  };
+};
+
 const fetchData = async (
   url: string,
   method: string,
@@ -75,12 +81,12 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
       fetchData(subscribesUrl, "GET", undefined),
     ]);
 
-    const emailsGuests = getGuests.records.map((record: any) =>
+    const emailsGuests = getGuests.records.map((record: AirtableRecord) =>
       record.fields.Email
     );
-    const emailsSubscribes = getSubscribes.records.map((record: any) =>
-      record.fields.Email
-    );
+    const emailsSubscribes = getSubscribes.records.map((
+      record: AirtableRecord,
+    ) => record.fields.Email);
 
     if (emailsGuests.includes(email)) {
       if (emailsSubscribes.includes(email)) {
