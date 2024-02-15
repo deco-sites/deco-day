@@ -55,7 +55,6 @@ function setup() {
     VIEW.offsetX  = (VIEW.width - VIEW.SAFE_WIDTH) / 2 / VIEW.scale;
     VIEW.offsetY  = (VIEW.height - VIEW.SAFE_HEIGHT) / 2 / VIEW.scale;
 
-
     // create engine
     var engine = Engine.create(),
         world = engine.world;
@@ -79,27 +78,32 @@ function setup() {
 
     for (let i = 0; i < daisyElems.length; i++) {
         const elem = daisyElems[i];
-
+    
         elem.style.zIndex = 0;
-
+    
         const isBall = elem.classList.contains('rounded-full');
-
+    
         const radius = isBall ? 20 : 4;
-
+    
+        // Gere posições aleatórias para cada elemento dentro das margens definidas
+        const posY = -400; // Posição acima da tela
+        const posX = Math.random() * (window.innerWidth);
+        console.log(window.innerWidth) // Aleatório em toda a largura da tela
+    
         const body = Bodies.rectangle(
-            VIEW.centerX + Math.floor(Math.random() * VIEW.width/2) - VIEW.width/4, //Number(elem.dataset.x),
-            - (VIEW.centerY + Math.floor(Math.random() * VIEW.height / 2) - VIEW.height / 4) * 2, // Number(elem.dataset.y),
-            elem.clientWidth + 5,// * 1.5, // VIEW.width * elem.offsetWidth / window.innerWidth,
-            elem.clientHeight + 5,// * 1.5, // VIEW.height * elem.offsetHeight / window.innerHeight,
+            posX, 
+            posY, 
+            elem.clientWidth + 5,
+            elem.clientHeight + 5,
             { render: { visible: true }, restitution: 0.4, gravity: .8, friction: 1, density: 1, chamfer: { radius } },
         );
         
         // Defina o vetor de gravidade no mundo
         engine.world.gravity.y = propEditavel;
-
+    
         if (!isBall) {
             elem.addEventListener('click', () => {
-
+    
                 Matter.Body.applyForce(body, body.position, {x: 0, y: 150 });
             });
         }
