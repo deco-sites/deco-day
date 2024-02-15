@@ -58,6 +58,17 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     const subscribesUrl =
       `https://api.airtable.com/v0/${ctx.airtableBase}/tbllIA3LVVvcgy94h`;
 
+    const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
+      "records": [
+        {
+          "fields": {
+            "Email": "debug-camudo@deco.cx",
+            "Waitlist": "True",
+          },
+        },
+      ],
+    });
+
     const [getGuests, getSubscribes] = await Promise.all([
       fetchData(guestsUrl, "GET", ctx, undefined),
       fetchData(subscribesUrl, "GET", ctx, undefined),
