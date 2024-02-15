@@ -13,6 +13,10 @@ import SocialLinks, {
   Props as SocialLinksProps,
 } from "deco-sites/deco-day/sections/SocialLinks.tsx";
 import RSVPInput from "deco-sites/deco-day/islands/RSVPInput.tsx";
+import { useSignal } from "@preact/signals";
+import ScheduleMenu from "deco-sites/deco-day/islands/ScheduleMenu.tsx";
+import { AppContext } from "deco-sites/deco-day/apps/site.ts";
+
 
 /**
  * @title ToggleDarkMode
@@ -62,7 +66,7 @@ function Radio({ name }: RadioProps) {
     <input
       type="radio"
       name={name}
-      class="radio w-9 h-9 radio-primary elem absolute rounded-full checked:!bg-black hover:border-white  border-white dark:hover:border-black dark:border-black"
+      class="radio h-8 w-8 lg:w-9 lg:h-9 radio-primary elem absolute rounded-full checked:!bg-black hover:border-white  border-white dark:hover:border-black dark:border-black"
       checked
     />
   );
@@ -83,7 +87,7 @@ function CheckBox({}: CheckBoxProps) {
     <input
       type="checkbox"
       checked
-      class="checkbox border w-14 h-14 elem absolute rounded-xl border-white dark:border-black"
+      class="checkbox border w-10 h-10 lg:w-14 lg:h-14 elem absolute rounded-xl border-white dark:border-black"
     />
   );
 }
@@ -103,7 +107,7 @@ function Toggle({}: ToggleProps) {
     <input
       type="checkbox"
       style={`--tglbg: black; --handleoffset: 50px;`}
-      class="toggle w-[100px] h-[50px] !text-white rounded-xl elem absolute"
+      class="toggle w-[80px] h-[40px] lg:w-[100px] lg:h-[50px] !text-white rounded-xl elem absolute"
       checked
     />
   );
@@ -123,7 +127,7 @@ function Input({}: InputProps) {
   return (
     <input
       type="text"
-      class="elem absolute input input-bordered rounded-xl input-lg"
+      class="elem absolute input input-bordered rounded-xl input-sm lg:input-lg"
       placeholder="Type here"
     />
   );
@@ -151,7 +155,7 @@ function Button({ label, color, backgroundColor }: ButtonProps) {
   return (
     <button
       style={`background-color: ${bg}; color: ${clr};`}
-      class="elem btn border-none absolute btn-lg rounded-xl hover:brightness-[85%]"
+      class="elem btn border-none absolute btn-sm lg:btn-lg rounded-xl hover:brightness-[85%]"
     >
       {label}
     </button>
@@ -173,7 +177,7 @@ function Slider({}: SliderProps) {
     <input
       type="range"
       style={`--range-shdw: black; --fallback-bc: #C9CFCF; --rounded-box: 6px;`}
-      class="elem absolute range w-[300px] border-white"
+      class="elem absolute range w-[200px] lg:w-[300px] border-white"
       min="0"
       max="100"
       value="40"
@@ -195,9 +199,26 @@ interface TopButton {
   icon: AvailableIcons;
   url: string;
 }
+
+interface Header {
+  date?: string;
+  loc?: string;
+  fullLoc?: string;
+}
+
 export interface Props {
   animationElements: AnimationElement[];
+  /**
+ * @description Mobile Elements
+ */
+  animationElementsMobile: AnimationElement[];
+  /**
+ * @description Select Gravity Level - 1(super slow) to 7(super fast) | Default is 4(Earths Gravity)
+ */
+  /** @default 4 */
+  gravitySensation?: 1 | 2 | 3 | 4 | 5 | 6 | 7 ;
   infoPanel: {
+    scheduleHeader?: Header;
     schedule: ScheduleProps;
     slideBanner: SlideBannerProps;
     socialLinks: SocialLinksProps;
@@ -225,93 +246,134 @@ const AnimatedElementMap: Record<
   toggle: Toggle,
 };
 
+export const loader = async (
+  props: Props,
+  req: Request,
+  ctx: AppContext,
+) => {
+
+  const device = ctx.device;
+
+  return{
+    ...props,
+    isMobile: device
+  } 
+}
+
 export default function DecoDay({
   animationElements,
+  animationElementsMobile,
   infoPanel,
   emailInput,
-}: Props) {
+  isMobile,
+  gravitySensation
+}: Omit<Props, "isMobile"> & {
+  animationElements: AnimationElement[];
+  animationElementsMobile?: AnimationElement[];
+  infoPanel: {
+    scheduleHeader?: Header;
+    schedule: ScheduleProps;
+    slideBanner: SlideBannerProps;
+    socialLinks: SocialLinksProps;
+    topButtons: TopButton[];
+    ctaText: string;
+  };
+  emailInput: {
+    successMessage?: string;
+    errorMessage?: string;
+    placeholder?: string;
+  };
+  isMobile: string;
+}) {
+
   return (
-    <div class="flex flex-col-reverse lg:flex lg:flex-row h-[200vh] lg:h-screen w-screen overflow-x-hidden">
-      <div class="relative h-screen lg:h-screen w-screen lg:w-[50vw] overflow-clip">
-        <div id="canvas" class="absolute z-[1]"></div>
-        <div class="absolute flex z-[2] flex-col items-center pt-12 gap-4 bg-black dark:bg-white h-screen w-screen lg:w-[50vw]">
+    <div class="flex flex-col lg:flex-row h-screen w-screen overflow-hidden">
+      <div class="relative h-screen lg:h-screen w-screen overflow-clip">
+        <ScheduleMenu
+          infoPanel={infoPanel}
+          isMobile={isMobile}
+        />
+        <div id="canvas" class="absolute z-[0]"></div>
+        <div class="absolute z-[0] flex flex-col pt-[85px] lg:pt-[65px] items-center gap-4 bg-black dark:bg-white h-screen w-screen">
           <div
-            class="absolute inset-0 flex justify-end"
-            style="right: -300px; top: -150px"
+            class="absolute inset-0 flex justify-center"
+            style="right: 50px; top: -50px"
           >
-            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[150px]"></div>
-            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[150px]"></div>
+            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[200px]">
+            </div>
+            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[200px]">
+            </div>
           </div>
-          <p class="hidden lg:inline text-white dark:text-black text-center w-3/4 text-2xl">
-            Join our <strong>Dev Community Day</strong> and meet
-          </p>
           <img
-            src="/deco-2.0.png"
-            class="w-[40vw] hidden lg:hidden dark:lg:inline"
+            src="../2-0-lightmode.png"
+            class="w-[80vw] max-w-[304px] lg:max-w-[342px] hidden dark:inline"
           />
           <img
-            src="/deco-2.0-dark.png"
-            class="w-[40vw] hidden lg:inline dark:lg:hidden"
+            src="../2-0-darkmode.png"
+            class="w-[80vw] max-w-[304px] lg:max-w-[342px] inline dark:hidden"
           />
-        </div>
-        <div class="z-10">
-          {animationElements.map((elem) => AnimatedElementMap[elem.id](elem))}
-        </div>
-      </div>
-      <div class="overflow-y-scroll h-screen w-screen lg:w-[50vw] bg-white dark:bg-black py-11 px-6 lg:px-12 dark:text-white">
-        <div class="flex flex-col gap-10 items-start pb-16 mb-16">
-          <div class="flex flex-col gap-4 lg:hidden">
-            <h4 class="text-2xl">
-              Join our <strong>Dev Community Day</strong> and meet
-            </h4>
-            <img
-              src="/deco-2.0.png"
-              class="w-2/3 inline lg:hidden dark:hidden"
-            />
-            <img
-              src="/deco-2.0-dark.png"
-              class="w-2/3 hidden lg:inline dark:inline"
-            />
-          </div>
-          <div class="flex flex-col gap-3 items-start pb-10 w-full border-b border-black dark:border-white">
-            {infoPanel.topButtons.map(({ icon, label, url }) => (
-              <a
-                class={`flex items-center transition-colors justify-center gap-4 text-2lx h-14 px-5 border rounded-[100px]
-                 border-black hover:text-white hover:bg-black
-                  `}
-                href={url}
-              >
-                <Icon id={icon} size={20} />
-                <span>{label}</span>
-              </a>
-            ))}
-          </div>
-          <Schedule {...infoPanel.schedule} />
-        </div>
-        <div class="relative">
-          <div class="absolute z-[1] -rotate-3 w-[150vw] top-[-100px] left-[-30%] lg:left-[-50%]">
-            <SlideBanner {...infoPanel.slideBanner} />
+          <div class="flex flex-col items-center lg:w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
+            <p class="inline px-4 lg:px-0 text-white dark:text-black text-center w-full text-[20px] lg:text-2xl leading-[150%]">
+              Join our <strong>Dev Community Day</strong>{" "}
+              and meet the future of webdev
+            </p>
+            <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full">
+              <div class="flex flex-row items-center justify-center w-full gap-1.5 lg:gap-4 leading-[150%]">
+                {infoPanel.topButtons.map(({ icon, label, url }) => (
+                  <a
+                    class={`w-1/2 flex items-center justify-center gap-[11px] lg:gap-4 text-[12px] lg:text-[20px] py-4 border rounded-[100px]
+                            border-[#FFFFFF26] text-white dark:border-black dark:text-black bg-white bg-opacity-5 hover:opacity-50
+                              `}
+                    href={url}
+                  >
+                    <Icon id={icon} size={20} />
+                    <span>{label}</span>
+                  </a>
+                ))}
+              </div>
+              <RSVPInput
+                placeholder={emailInput?.placeholder}
+                errorMessage={emailInput?.errorMessage}
+              />
+            </div>
           </div>
         </div>
-        <div class="flex flex-col gap-3 mt-8">
-          <p>
-            RSPV{" "}
-            <span class="text-secondary dark:text-accent">
-              before March 1st
-            </span>
-          </p>
-          <RSVPInput
-            cta={infoPanel.ctaText}
-            placeholder={emailInput?.placeholder}
-            errorMessage={emailInput?.errorMessage}
-            successMessage={emailInput?.successMessage}
-          />
-        </div>
-        <div class="pt-9 flex justify-center lg:justify-end lg:absolute lg:bottom-4 lg:right-4">
-          <SocialLinks {...infoPanel.socialLinks} />
+        <div id="floatingElements" class="absolute z-0 invisible">
+        {isMobile === 'desktop'
+            ? animationElements.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
+            : animationElementsMobile.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
+        }
         </div>
       </div>
       <script type="module" src="/matter-script.js" />
+      {gravitySensation === 1 && (
+      <div class="hidden" data-prop-editavel="0.1">
+      </div>
+      )}
+      {gravitySensation === 2 && (
+          <div class="hidden" data-prop-editavel="0.3">
+          </div>
+      )}
+      {gravitySensation === 3 && (
+          <div class="hidden" data-prop-editavel="0.6">
+          </div>
+      )}
+      {gravitySensation === 4 && (
+          <div class="hidden" data-prop-editavel="1">
+          </div>
+      )}
+      {gravitySensation === 5 && (
+          <div class="hidden" data-prop-editavel="1.5">
+          </div>
+      )}
+      {gravitySensation === 6 && (
+          <div class="hidden" data-prop-editavel="2">
+          </div>
+      )}
+      {gravitySensation === 7 && (
+          <div class="hidden" data-prop-editavel="3">
+          </div>
+      )}
     </div>
   );
 }

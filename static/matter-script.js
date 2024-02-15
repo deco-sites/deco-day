@@ -4,6 +4,16 @@ const htmlElement = document.querySelector('html');
 
 const toggles = document.querySelectorAll('[data-toggle-darkmode]');
 
+const propEditavel = document.querySelector('[data-prop-editavel]').dataset.propEditavel;
+
+window.addEventListener('load', () => {
+    setTimeout(() => {
+        const floatingElements = document.getElementById('floatingElements');
+        floatingElements.classList.remove('invisible');
+    }, 250);
+});
+
+
 Array.from(toggles).forEach(tgl => {
     tgl.addEventListener('change', (e) => {   
         if (e.target.checked) {
@@ -70,7 +80,7 @@ function setup() {
     for (let i = 0; i < daisyElems.length; i++) {
         const elem = daisyElems[i];
 
-        elem.style.zIndex = 10;
+        elem.style.zIndex = 0;
 
         const isBall = elem.classList.contains('rounded-full');
 
@@ -83,12 +93,126 @@ function setup() {
             elem.clientHeight + 5,// * 1.5, // VIEW.height * elem.offsetHeight / window.innerHeight,
             { render: { visible: true }, restitution: 0.4, gravity: .8, friction: 1, density: 1, chamfer: { radius } },
         );
+        
+        // Defina o vetor de gravidade no mundo
+        engine.world.gravity.y = propEditavel;
 
         if (!isBall) {
             elem.addEventListener('click', () => {
+
                 Matter.Body.applyForce(body, body.position, {x: 0, y: 150 });
             });
         }
+        
+        let isDragging = false;
+        elem.addEventListener('mousedown', (e) => {
+            isDragging = false;
+            const startX = e.clientX;
+            const startY = e.clientY;
+
+            const mouseMoveHandler = (event) => {
+                const deltaX = event.clientX - startX;
+                const deltaY = event.clientY - startY;
+
+                if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                    isDragging = true;
+                }
+            };
+
+            const mouseUpHandler = () => {
+                document.removeEventListener('mousemove', mouseMoveHandler);
+                document.removeEventListener('mouseup', mouseUpHandler);
+
+                if (isDragging) {
+
+                    e.preventDefault();
+                    const mouse = Mouse.create();
+                    const mouseConstraint = MouseConstraint.create(engine, {
+                        mouse: mouse,
+                        constraint: {
+                            stiffness: 0.2,
+                            render: {
+                                visible: false
+                            }
+                        }
+                    });
+                    Composite.add(world, mouseConstraint);
+                    Render.mouse = mouse;
+                }
+            };
+
+            document.addEventListener('mousemove', mouseMoveHandler);
+            document.addEventListener('mouseup', mouseUpHandler);
+        });
+
+        let startX, startY;
+
+        elem.addEventListener('touchstart', (e) => {
+            isDragging = false;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        });
+
+        elem.addEventListener('touchmove', (e) => {
+            const currentX = e.touches[0].clientX;
+            const currentY = e.touches[0].clientY;
+
+            const deltaX = currentX - startX;
+            const deltaY = currentY - startY;
+
+            if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                isDragging = true;
+            }
+
+            if (isDragging) {
+                const translationX = (currentX - startX) / VIEW.scale;
+                const translationY = (currentY - startY) / VIEW.scale;
+
+                Matter.Body.translate(body, { x: translationX, y: translationY });
+
+                startX = currentX;
+                startY = currentY;
+            }
+        });
+
+
+        elem.addEventListener('touchend', (e) => {
+
+            if (isDragging) {
+                e.preventDefault();
+                const mouse = Mouse.create(render.canvas);
+                const mouseConstraint = MouseConstraint.create(engine, {
+                    mouse: mouse,
+                    constraint: {
+                        stiffness: 0.2,
+                        render: {
+                            visible: false
+                        }
+                    }
+                });
+                Composite.add(world, mouseConstraint);
+                Render.mouse = mouse;
+            }
+        });
+
+        elem.addEventListener('click', (e) => {
+            if (isDragging) {
+
+                e.preventDefault();
+                const mouse = Mouse.create();
+                const mouseConstraint = MouseConstraint.create(engine, {
+                    mouse: mouse,
+                    constraint: {
+                        stiffness: 0.2,
+                        render: {
+                            visible: false
+                        }
+                    }
+                });
+                Composite.add(world, mouseConstraint);
+                Render.mouse = mouse;
+            }
+        });
 
         bodies.push(body);
         elem.id = body.id;
@@ -106,20 +230,34 @@ function setup() {
     
     Composite.add(world, [
         // walls
-        Bodies.rectangle(VIEW.width / 2, VIEW.height, VIEW.width, 1, { isStatic: true,  }),
-        Bodies.rectangle(0, VIEW.width, 1, VIEW.height * 2, { isStatic: true }),
-        Bodies.rectangle(VIEW.width, 0, 1, VIEW.height * 2, { isStatic: true }),
+        // Base
+        Bodies.rectangle(VIEW.width / 2, VIEW.height, window.innerWidth*2, 10, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
+        // Lateral esquerda
+        Bodies.rectangle(0, VIEW.height / 2, 10, VIEW.height * 2, { isStatic: true, render: { visible: true,fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
+        // Lateral direita
+        Bodies.rectangle(window.innerWidth, VIEW.height / 2, 10, VIEW.height * 2, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
     ]);
 
     bodies.forEach((body, idx) => {
         setTimeout(() => {
             Composite.add(world, [body]);
-        }, 1500 + 1500 * idx);
+        }, 50 + 0 * idx);
+    });
+
+    const gravityForce = { x: 0, y: propEditavel };
+
+    bodies.forEach(body => {
+        Matter.Body.applyForce(body, body.position, { 
+            x: gravityForce.x, 
+            y: gravityForce.y 
+        });
     });
 
     // add mouse control
-    var mouse = Mouse.create(render.canvas),
-        mouseConstraint = MouseConstraint.create(engine, {
+    var mouse = Mouse.create(render.canvas)
+    mouse.pixelRatio = window.devicePixelRatio || 1;
+
+    var mouseConstraint = MouseConstraint.create(engine, {
             mouse: mouse,
             constraint: {
                 stiffness: 0.2,
@@ -169,7 +307,3 @@ function update() {
     }
     window.requestAnimationFrame(update);
 }
-
-setTimeout(() => {
-    
-}, 500);
