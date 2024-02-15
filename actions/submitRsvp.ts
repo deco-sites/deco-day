@@ -9,14 +9,19 @@ const isEmailValid = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
+const airtableToken = Deno.env.get("AIRTABLE_KEY");
+
+type AirtableRecord = {
+  fields: {
+    Email: string;
+  };
+};
+
 const fetchData = async (
   url: string,
   method: string,
-  ctx: AppContext,
   body?: object,
 ) => {
-  const airtableToken = await ctx.airtableKey.get();
-
   const headers = {
     "Authorization": `Bearer ${airtableToken}`,
     "Content-Type": "application/json",
@@ -36,6 +41,7 @@ const fetchData = async (
   return response.json();
 };
 
+// redeploy
 // TODO: Implement rate-limiter or captcha
 export default async (props: Props, _req: Request, ctx: AppContext) => {
   try {
@@ -52,75 +58,88 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     // Confirmados: viwjTprU7jnuNvjNV
     // https://airtable.com/developers/web/api/list-records
 
-    const guestsUrl =
-      `https://api.airtable.com/v0/${ctx.airtableBase}/tblBwp1MowAqOH9y3`;
+    // const guestsUrl =
+    //   `https://api.airtable.com/v0/${ctx.airtableBase}/tblBwp1MowAqOH9y3`;
 
     const subscribesUrl =
       `https://api.airtable.com/v0/${ctx.airtableBase}/tbllIA3LVVvcgy94h`;
 
-    const [getGuests, getSubscribes] = await Promise.all([
-      fetchData(guestsUrl, "GET", ctx, undefined),
-      fetchData(subscribesUrl, "GET", ctx, undefined),
-    ]);
+    const response_debug = await fetchData(subscribesUrl, "POST", {
+      "records": [
+        {
+          "fields": {
+            "Email": "debug-camudo@deco.cx",
+            "Waitlist": "True",
+          },
+        },
+      ],
+    });
 
-    const emailsGuests = getGuests.records.map((record: any) =>
-      record.fields.Email
-    );
-    const emailsSubscribes = getSubscribes.records.map((record: any) =>
-      record.fields.Email
-    );
+    return response_debug;
 
-    if (emailsGuests.includes(email)) {
-      if (emailsSubscribes.includes(email)) {
-        // evita duplicação de emails na tabela
-        const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
-          "records": [
-            {
-              "fields": {
-                "Email": email,
-                "Waitlist": "False",
-              },
-            },
-          ],
-        });
-        if (createRecord?.error) {
-          return {
-            ok: false,
-            status: "error",
-          };
-        }
-      }
-      return {
-        ok: true,
-        status: "subscribe",
-      };
-    } else {
-      if (emailsSubscribes.includes(email)) {
-        // evita duplicação de emails na tabela
-        const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
-          "records": [
-            {
-              "fields": {
-                "Email": email,
-                "Waitlist": "True",
-              },
-            },
-          ],
-        });
+    //   const [getGuests, getSubscribes] = await Promise.all([
+    //     fetchData(guestsUrl, "GET", undefined),
+    //     fetchData(subscribesUrl, "GET", undefined),
+    //   ]);
 
-        if (createRecord?.error) {
-          return {
-            ok: false,
-            status: "error",
-          };
-        }
-      }
+    //   const emailsGuests = getGuests.records.map((record: AirtableRecord) =>
+    //     record.fields.Email
+    //   );
+    //   const emailsSubscribes = getSubscribes.records.map((
+    //     record: AirtableRecord,
+    //   ) => record.fields.Email);
 
-      return {
-        ok: true,
-        status: "waiting-list",
-      };
-    }
+    //   if (emailsGuests.includes(email)) {
+    //     if (emailsSubscribes.includes(email)) {
+    //       // evita duplicação de emails na tabela
+    //       const createRecord = await fetchData(subscribesUrl, "POST", {
+    //         "records": [
+    //           {
+    //             "fields": {
+    //               "Email": email,
+    //               "Waitlist": "False",
+    //             },
+    //           },
+    //         ],
+    //       });
+    //       if (createRecord?.error) {
+    //         return {
+    //           ok: false,
+    //           status: "error",
+    //         };
+    //       }
+    //     }
+    //     return {
+    //       ok: true,
+    //       status: "subscribe",
+    //     };
+    //   } else {
+    //     if (emailsSubscribes.includes(email)) {
+    //       // evita duplicação de emails na tabela
+    //       const createRecord = await fetchData(subscribesUrl, "POST", {
+    //         "records": [
+    //           {
+    //             "fields": {
+    //               "Email": email,
+    //               "Waitlist": "True",
+    //             },
+    //           },
+    //         ],
+    //       });
+
+    //       if (createRecord?.error) {
+    //         return {
+    //           ok: false,
+    //           status: "error",
+    //         };
+    //       }
+    //     }
+
+    //     return {
+    //       ok: true,
+    //       status: "waiting-list",
+    //     };
+    //   }
   } catch (error) {
     // TODO: How to log to Hyperdx?
     console.error("error", error);
