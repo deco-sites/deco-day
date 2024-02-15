@@ -12,7 +12,7 @@ const isEmailValid = (email: string): boolean => {
 const fetchData = async (
   url: string,
   method: string,
-  ctx: AppContext,
+  _ctx: AppContext,
   body?: object,
 ) => {
   const airtableToken = Deno.env.get('AIRTABLE_KEY');
