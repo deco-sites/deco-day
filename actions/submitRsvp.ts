@@ -9,14 +9,13 @@ const isEmailValid = (email: string): boolean => {
   return emailRegex.test(email);
 };
 
+const airtableToken = Deno.env.get("AIRTABLE_KEY");
+
 const fetchData = async (
   url: string,
   method: string,
-  ctx: AppContext,
   body?: object,
 ) => {
-  const airtableToken = await ctx.airtableKey.get();
-
   const headers = {
     "Authorization": `Bearer ${airtableToken}`,
     "Content-Type": "application/json",
@@ -58,22 +57,22 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     const subscribesUrl =
       `https://api.airtable.com/v0/${ctx.airtableBase}/tbllIA3LVVvcgy94h`;
 
-    const response_debug = await fetchData(subscribesUrl, "POST", ctx, {
-      "records": [
-        {
-          "fields": {
-            "Email": "debug-camudo@deco.cx",
-            "Waitlist": "True",
-          },
-        },
-      ],
-    });
+    // const response_debug = await fetchData(subscribesUrl, "POST", {
+    //   "records": [
+    //     {
+    //       "fields": {
+    //         "Email": "debug-camudo@deco.cx",
+    //         "Waitlist": "True",
+    //       },
+    //     },
+    //   ],
+    // });
 
-    return response_debug;
+    // return response_debug;
 
     const [getGuests, getSubscribes] = await Promise.all([
-      fetchData(guestsUrl, "GET", ctx, undefined),
-      fetchData(subscribesUrl, "GET", ctx, undefined),
+      fetchData(guestsUrl, "GET", undefined),
+      fetchData(subscribesUrl, "GET", undefined),
     ]);
 
     const emailsGuests = getGuests.records.map((record: any) =>
@@ -86,7 +85,7 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     if (emailsGuests.includes(email)) {
       if (emailsSubscribes.includes(email)) {
         // evita duplicação de emails na tabela
-        const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
+        const createRecord = await fetchData(subscribesUrl, "POST", {
           "records": [
             {
               "fields": {
@@ -110,7 +109,7 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     } else {
       if (emailsSubscribes.includes(email)) {
         // evita duplicação de emails na tabela
-        const createRecord = await fetchData(subscribesUrl, "POST", ctx, {
+        const createRecord = await fetchData(subscribesUrl, "POST", {
           "records": [
             {
               "fields": {
