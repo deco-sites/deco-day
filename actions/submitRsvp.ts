@@ -57,88 +57,88 @@ export default async (props: Props, _req: Request, ctx: AppContext) => {
     // Confirmados: viwjTprU7jnuNvjNV
     // https://airtable.com/developers/web/api/list-records
 
-    const guestsUrl =
-      `https://api.airtable.com/v0/${ctx.airtableBase}/tblBwp1MowAqOH9y3`;
+    // const guestsUrl =
+    //   `https://api.airtable.com/v0/${ctx.airtableBase}/tblBwp1MowAqOH9y3`;
 
     const subscribesUrl =
       `https://api.airtable.com/v0/${ctx.airtableBase}/tbllIA3LVVvcgy94h`;
 
-    // const response_debug = await fetchData(subscribesUrl, "POST", {
-    //   "records": [
-    //     {
-    //       "fields": {
-    //         "Email": "debug-camudo@deco.cx",
-    //         "Waitlist": "True",
-    //       },
-    //     },
-    //   ],
-    // });
+    const response_debug = await fetchData(subscribesUrl, "POST", {
+      "records": [
+        {
+          "fields": {
+            "Email": "debug-camudo@deco.cx",
+            "Waitlist": "True",
+          },
+        },
+      ],
+    });
 
-    // return response_debug;
+    return response_debug;
 
-    const [getGuests, getSubscribes] = await Promise.all([
-      fetchData(guestsUrl, "GET", undefined),
-      fetchData(subscribesUrl, "GET", undefined),
-    ]);
+    //   const [getGuests, getSubscribes] = await Promise.all([
+    //     fetchData(guestsUrl, "GET", undefined),
+    //     fetchData(subscribesUrl, "GET", undefined),
+    //   ]);
 
-    const emailsGuests = getGuests.records.map((record: AirtableRecord) =>
-      record.fields.Email
-    );
-    const emailsSubscribes = getSubscribes.records.map((
-      record: AirtableRecord,
-    ) => record.fields.Email);
+    //   const emailsGuests = getGuests.records.map((record: AirtableRecord) =>
+    //     record.fields.Email
+    //   );
+    //   const emailsSubscribes = getSubscribes.records.map((
+    //     record: AirtableRecord,
+    //   ) => record.fields.Email);
 
-    if (emailsGuests.includes(email)) {
-      if (emailsSubscribes.includes(email)) {
-        // evita duplicação de emails na tabela
-        const createRecord = await fetchData(subscribesUrl, "POST", {
-          "records": [
-            {
-              "fields": {
-                "Email": email,
-                "Waitlist": "False",
-              },
-            },
-          ],
-        });
-        if (createRecord?.error) {
-          return {
-            ok: false,
-            status: "error",
-          };
-        }
-      }
-      return {
-        ok: true,
-        status: "subscribe",
-      };
-    } else {
-      if (emailsSubscribes.includes(email)) {
-        // evita duplicação de emails na tabela
-        const createRecord = await fetchData(subscribesUrl, "POST", {
-          "records": [
-            {
-              "fields": {
-                "Email": email,
-                "Waitlist": "True",
-              },
-            },
-          ],
-        });
+    //   if (emailsGuests.includes(email)) {
+    //     if (emailsSubscribes.includes(email)) {
+    //       // evita duplicação de emails na tabela
+    //       const createRecord = await fetchData(subscribesUrl, "POST", {
+    //         "records": [
+    //           {
+    //             "fields": {
+    //               "Email": email,
+    //               "Waitlist": "False",
+    //             },
+    //           },
+    //         ],
+    //       });
+    //       if (createRecord?.error) {
+    //         return {
+    //           ok: false,
+    //           status: "error",
+    //         };
+    //       }
+    //     }
+    //     return {
+    //       ok: true,
+    //       status: "subscribe",
+    //     };
+    //   } else {
+    //     if (emailsSubscribes.includes(email)) {
+    //       // evita duplicação de emails na tabela
+    //       const createRecord = await fetchData(subscribesUrl, "POST", {
+    //         "records": [
+    //           {
+    //             "fields": {
+    //               "Email": email,
+    //               "Waitlist": "True",
+    //             },
+    //           },
+    //         ],
+    //       });
 
-        if (createRecord?.error) {
-          return {
-            ok: false,
-            status: "error",
-          };
-        }
-      }
+    //       if (createRecord?.error) {
+    //         return {
+    //           ok: false,
+    //           status: "error",
+    //         };
+    //       }
+    //     }
 
-      return {
-        ok: true,
-        status: "waiting-list",
-      };
-    }
+    //     return {
+    //       ok: true,
+    //       status: "waiting-list",
+    //     };
+    //   }
   } catch (error) {
     // TODO: How to log to Hyperdx?
     console.error("error", error);
