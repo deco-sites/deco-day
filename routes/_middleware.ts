@@ -1,12 +1,13 @@
 import { allowCorsFor } from "deco/mod.ts";
+import { FreshContext } from "$fresh/server.ts";
 
-export default function handler(req: Request, ctx: unknown) {
-    // Allow Cors
-    Object.entries(allowCorsFor(req)).map(([name, value]) => {
-        ctx.response.headers.set(name, value);
-    });
+export default async function handler(req: Request, ctx: FreshContext) {
+  const resp = await ctx.next();
 
-    const resp = await ctx.next();
+  // Allow Cors
+  Object.entries(allowCorsFor(req)).map(([name, value]) => {
+    resp.headers.set(name, value);
+  });
 
-    return resp;
+  return resp;
 }
