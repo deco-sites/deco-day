@@ -41,6 +41,7 @@ const fetchData = async (
   return response.json();
 };
 
+// redeploy
 // TODO: Implement rate-limiter or captcha
 export default async (props: Props, _req: Request, ctx: AppContext) => {
   try {
