@@ -13,8 +13,8 @@ import SocialLinks, {
   Props as SocialLinksProps,
 } from "deco-sites/deco-day/sections/SocialLinks.tsx";
 import RSVPInput from "deco-sites/deco-day/islands/RSVPInput.tsx";
-import { useSignal } from "@preact/signals";
 import ScheduleMenu from "deco-sites/deco-day/islands/ScheduleMenu.tsx";
+import DecoDayButtons from "deco-sites/deco-day/islands/DecoDayButtons.tsx";
 import { AppContext } from "deco-sites/deco-day/apps/site.ts";
 
 
@@ -324,19 +324,7 @@ export default function DecoDay({
                 }}
             />
             <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full">
-              <div class="flex flex-row items-center justify-center w-full gap-1.5 lg:gap-4 leading-[150%]">
-                {infoPanel.topButtons.map(({ icon, label, url }) => (
-                  <a
-                    class={`w-1/2 flex items-center justify-center gap-[11px] lg:gap-4 text-[12px] lg:text-[20px] py-4 border rounded-[100px]
-                            border-[#FFFFFF26] text-white dark:border-black dark:text-black bg-white bg-opacity-5 hover:opacity-50
-                              `}
-                    href={url}
-                  >
-                    <Icon id={icon} size={20} />
-                    <span>{label}</span>
-                  </a>
-                ))}
-              </div>
+              <DecoDayButtons infoPanel={infoPanel}/>
               <RSVPInput
                 placeholder={emailInput?.placeholder}
                 errorMessage={emailInput?.errorMessage}

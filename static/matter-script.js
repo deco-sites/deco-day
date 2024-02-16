@@ -88,7 +88,6 @@ function setup() {
         // Gere posições aleatórias para cada elemento dentro das margens definidas
         const posY = -400; // Posição acima da tela
         const posX = Math.random() * (window.innerWidth);
-        console.log(window.innerWidth) // Aleatório em toda a largura da tela
     
         const body = Bodies.rectangle(
             posX, 
