@@ -87,7 +87,7 @@ function CheckBox({}: CheckBoxProps) {
     <input
       type="checkbox"
       checked
-      class="checkbox border w-10 h-10 lg:w-14 lg:h-14 elem absolute rounded-xl border-white dark:border-black"
+      class="checkbox border w-10 h-10 xl:w-12 xl:h-12 2xl:w-14 2xl:h-14 elem absolute rounded-xl border-white dark:border-black"
     />
   );
 }
@@ -107,7 +107,7 @@ function Toggle({}: ToggleProps) {
     <input
       type="checkbox"
       style={`--tglbg: black; --handleoffset: 50px;`}
-      class="toggle w-[80px] h-[40px] lg:w-[100px] lg:h-[50px] !text-white rounded-xl elem absolute"
+      class="toggle w-[80px] h-[40px] xl:w-[100px] xl:h-[45px] 2xl:w-[100px] 2xl:h-[50px] !text-white rounded-xl elem absolute"
       checked
     />
   );
@@ -127,7 +127,7 @@ function Input({}: InputProps) {
   return (
     <input
       type="text"
-      class="elem absolute input input-bordered rounded-xl input-sm lg:input-lg"
+      class="elem absolute input input-bordered rounded-xl input-sm xl:input-md 2xl:input-lg"
       placeholder="Type here"
     />
   );
@@ -155,7 +155,7 @@ function Button({ label, color, backgroundColor }: ButtonProps) {
   return (
     <button
       style={`background-color: ${bg}; color: ${clr};`}
-      class="elem btn w-[max-content] border-none absolute btn-sm lg:btn-lg rounded-xl hover:brightness-[85%]"
+      class="elem btn w-[max-content] border-none absolute btn-sm xl:btn-md 2xl:btn-lg rounded-xl hover:brightness-[85%]"
     >
       {label}
     </button>
@@ -310,11 +310,11 @@ export default function DecoDay({
           </div>
           <img
             src="../2-0-lightmode.png"
-            class="w-[80vw] max-w-[304px] lg:max-w-[342px] hidden dark:inline"
+            class="w-[80vw] max-w-[234px] lg:max-w-[322px] 2xl:max-w-[342px] hidden dark:inline"
           />
           <img
             src="../2-0-darkmode.png"
-            class="w-[80vw] max-w-[304px] lg:max-w-[342px] inline dark:hidden"
+            class="w-[80vw] max-w-[234px] lg:max-w-[322px] 2xl:max-w-[342px] inline dark:hidden"
           />
           <div class="flex flex-col items-center lg:w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
             <div

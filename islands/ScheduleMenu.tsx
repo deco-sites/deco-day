@@ -100,7 +100,7 @@ export default function ScheduleMenu({
             </div>
           </div>
         </div>
-        <div class="pt-9 flex justify-end lg:absolute lg:bottom-4 lg:right-4">
+        <div class="pt-9 hidden md:flex justify-end lg:absolute lg:bottom-4 lg:right-4">
           <SocialLinks {...infoPanel.socialLinks} />
         </div>
       </div>

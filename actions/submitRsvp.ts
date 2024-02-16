@@ -15,7 +15,7 @@ const fetchData = async (
   _ctx: AppContext,
   body?: object,
 ) => {
-  const airtableToken = Deno.env.get('AIRTABLE_KEY');
+  const airtableToken = Deno.env.get("AIRTABLE_KEY");
 
   const headers = {
     "Authorization": `Bearer ${airtableToken}`,

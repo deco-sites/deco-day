@@ -57,7 +57,7 @@ export default function RSVPInput({
   return (
     <div class="flex flex-col gap-3 w-full">
       <form
-        class="flex gap-3 p-2 w-full rounded-[100px] justify-center items-center border border-white border-opacity-15 placeholder:text-white dark:placeholder:text-black bg-white bg-opacity-5 dark:bg-transparent dark:border-black"
+        class="flex gap-3 p-1.5 lg:p-2 w-full rounded-[100px] justify-center items-center border border-white border-opacity-15 placeholder:text-white dark:placeholder:text-black bg-white bg-opacity-5 dark:bg-transparent dark:border-black"
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -74,10 +74,10 @@ export default function RSVPInput({
         <UiButton
           type="submit"
           loading={loading.value}
-          class={`rounded-[100px] border-0 font-[500] content-center text-[18px] lg:text-[24px] py-[9.95px] px-[19.9px] lg:px-[28px] lg:py-[14px] ${
-            statusResponse.value === "waiting-list"
-              ? "bg-[#F6D579]"
-              : "bg-[#02F67C]"
+          class={`rounded-[100px] min-h-[auto!important] border-0 font-[500] content-center text-[18px] lg:text-[24px] py-[9.95px] px-[19.9px] lg:px-[28px] lg:py-[14px] bg-[#02F67C] ${
+            statusResponse.value
+              ? "disabled cursor-auto hover:bg-[#02F67C]"
+              : ""
           } text-black items-center`}
         >
           {feedbackMessage.value.buttonMessage}
