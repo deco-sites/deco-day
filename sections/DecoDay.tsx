@@ -300,12 +300,11 @@ export default function DecoDay({
         <div id="canvas" class="absolute z-[0]"></div>
         <div class="absolute z-[0] flex flex-col pt-[85px] lg:pt-[65px] items-center gap-4 bg-black dark:bg-white h-screen w-screen">
           <div
-            class="absolute inset-0 flex justify-center"
-            style="right: 50px; top: -50px"
+            class="top-[-100px] lg:right-[50px] lg:top-[-50px] absolute inset-0 flex justify-center z-[-10]"
           >
-            <div class="opacity-50 bg-secondary w-96 h-96 rounded-full blur-[200px]">
+            <div class="lg:opacity-50 bg-secondary w-[20rem] h-[21rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
             </div>
-            <div class="opacity-50 bg-accent w-96 h-96 rounded-full blur-[200px]">
+            <div class="lg:opacity-50 bg-accent w-[18rem] h-[21rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
             </div>
           </div>
           <img
@@ -318,7 +317,7 @@ export default function DecoDay({
           />
           <div class="flex flex-col items-center lg:w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
             <div
-              class="inline px-4 lg:px-0 text-white dark:text-black text-center w-full text-[20px] lg:text-2xl leading-[150%]"
+              class="inline px-4 lg:px-0 text-white dark:text-black text-center w-full text-[18px] lg:text-xl leading-[150%]"
                 dangerouslySetInnerHTML={{
                   __html: title,
                 }}

@@ -6,6 +6,8 @@ const toggles = document.querySelectorAll('[data-toggle-darkmode]');
 
 const propEditavel = document.querySelector('[data-prop-editavel]').dataset.propEditavel;
 
+const screenSize = window.innerWidth;
+
 window.addEventListener('load', () => {
     setTimeout(() => {
         const floatingElements = document.getElementById('floatingElements');
@@ -43,8 +45,8 @@ const VIEW = {};
 
 function setup() {
     daisyElems = document.querySelectorAll('.elem');
-    const mobile = window.innerWidth < 1080;
-    const innerWidth = mobile ? window.innerWidth : window.innerWidth / 2;
+    const mobile = screenSize < 1080;
+    const innerWidth = mobile ? screenSize : screenSize / 2;
     VIEW.SAFE_WIDTH = innerWidth;
     VIEW.SAFE_HEIGHT = window.innerHeight;
     VIEW.scale = Math.min((innerWidth) / VIEW.SAFE_WIDTH, window.innerHeight / VIEW.SAFE_HEIGHT);;
@@ -85,9 +87,9 @@ function setup() {
     
         const radius = isBall ? 20 : 4;
     
-        // Gere posições aleatórias para cada elemento dentro das margens definidas
-        const posY = -400; // Posição acima da tela
-        const posX = Math.random() * (window.innerWidth);
+        // Generate random positions for each element within defined margins
+        const posY = -400; // Position above the screen
+        const posX = Math.random() * (screenSize);
     
         const body = Bodies.rectangle(
             posX, 
@@ -97,7 +99,7 @@ function setup() {
             { render: { visible: true }, restitution: 0.4, gravity: .8, friction: 1, density: 1, chamfer: { radius } },
         );
         
-        // Defina o vetor de gravidade no mundo
+        // Set gravity vector in the world
         engine.world.gravity.y = propEditavel;
     
         if (!isBall) {
@@ -231,14 +233,14 @@ function setup() {
     //     angle:            (Math.random() * 2.000) - 1.000
     //   }
     
+    // Add walls
     Composite.add(world, [
-        // walls
         // Base
-        Bodies.rectangle(VIEW.width / 2, VIEW.height, window.innerWidth*2, 10, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
-        // Lateral esquerda
+        Bodies.rectangle(VIEW.width / 2, VIEW.height, screenSize*2, 10, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
+        // Left side
         Bodies.rectangle(0, VIEW.height / 2, 10, VIEW.height * 2, { isStatic: true, render: { visible: true,fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
-        // Lateral direita
-        Bodies.rectangle(window.innerWidth, VIEW.height / 2, 10, VIEW.height * 2, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
+        // Right side
+        Bodies.rectangle(screenSize, VIEW.height / 2, 10, VIEW.height * 2, { isStatic: true, render: { visible: true, fillStyle: '#3498db', strokeStyle: '#2980b9', lineWidth: 2 } }),
     ]);
 
     bodies.forEach((body, idx) => {
@@ -256,7 +258,7 @@ function setup() {
         });
     });
 
-    // add mouse control
+    // Add mouse control
     var mouse = Mouse.create(render.canvas)
     mouse.pixelRatio = window.devicePixelRatio || 1;
 
@@ -272,10 +274,10 @@ function setup() {
 
     Composite.add(world, mouseConstraint);
 
-    // keep the mouse in sync with rendering
+    // Keep the mouse in sync with rendering
     render.mouse = mouse;
     
-    // fit the render viewport to the scene
+    // Fit the render viewport to the scene
     Render.lookAt(render, {
         min: { x: 0, y: 0 },
         max: { x: VIEW.width, y: VIEW.height }
@@ -310,3 +312,73 @@ function update() {
     }
     window.requestAnimationFrame(update);
 }
+
+// Refresh page every screen resize
+
+function debounce(func, wait, immediate) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      clearTimeout(timeout);
+      timeout = setTimeout(function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
+      }, wait);
+      if (immediate && !timeout) func.apply(context, args);
+    };
+  }
+  
+  var refreshWorld = debounce(function() {
+    location.reload();
+  }, 500);
+  
+window.addEventListener('resize', refreshWorld);
+
+// Function to "explode" elements with form submission
+document.querySelector('form').addEventListener('submit', function(event) {
+    event.preventDefault(); 
+
+    // Define boundaries for x and y values
+    const minXMobile = -30;
+    const maxXMobile = 30; 
+    const minYMobile = -300; 
+    const maxYMobile = -150; 
+    const minX = -50; 
+    const maxX = 50; 
+    const minY = -600; 
+    const maxY = -300;
+
+    console.log(screenSize)
+
+    // Calculate random values of x and y within defined boundaries
+    let randomX, randomY;
+
+    if (window.innerWidth < 760) {
+        const minXMobile = -100;
+        const maxXMobile = 100;
+        const minYMobile = -150;
+        const maxYMobile = -50;
+        
+        randomX = Math.random() * (maxXMobile - minXMobile) + minXMobile;
+        randomY = Math.random() * (maxYMobile - minYMobile) + minYMobile;
+    } else {
+        const minX = -60;
+        const maxX = 60;
+        const minY = -600;
+        const maxY = -400;
+        
+        randomX = Math.random() * (maxX - minX) + minX;
+        randomY = Math.random() * (maxY - minY) + minY;
+    }
+
+    daisyElems.forEach(elem => {
+        const index = Array.from(daisyElems).findIndex(element => element.id === elem.id);
+        if (index !== -1) {
+            const body = bodies[index];
+            if (body) {
+                // Apply force to the body using random values of x and y
+                Matter.Body.applyForce(body, body.position, { x: randomX, y: randomY });
+            }
+        }
+    });
+});
