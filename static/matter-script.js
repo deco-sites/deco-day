@@ -152,10 +152,13 @@ function setup() {
             document.addEventListener('mouseup', mouseUpHandler);
         });
 
-        let startX, startY;
-
+        console.log('1111',body)
+        let startX, startY, draggedBody;
         elem.addEventListener('touchstart', (e) => {
             isDragging = false;
+            draggedBody = body;
+            Matter.Body.setStatic(draggedBody, true);
+
             startX = e.touches[0].clientX;
             startY = e.touches[0].clientY;
         });
@@ -171,34 +174,40 @@ function setup() {
                 isDragging = true;
             }
 
-            if (isDragging) {
+            if (isDragging && draggedBody) {
                 const translationX = (currentX - startX) / VIEW.scale;
                 const translationY = (currentY - startY) / VIEW.scale;
 
-                Matter.Body.translate(body, { x: translationX, y: translationY });
-
+                Matter.Body.translate(draggedBody, { x: translationX, y: translationY });
                 startX = currentX;
                 startY = currentY;
             }
         });
 
+        elem.addEventListener('touchend', () => {
+            if (isDragging && draggedBody) {
+                isDragging = false;
+                // Remova o corpo estático para ativar a gravidade
+                Matter.Body.setStatic(draggedBody, false);
 
-        elem.addEventListener('touchend', (e) => {
+                // Ajuste a posição inicial para simular a queda
+                const initialX = draggedBody.position.x;
+                const initialY = draggedBody.position.y;
 
-            if (isDragging) {
-                e.preventDefault();
-                const mouse = Mouse.create(render.canvas);
-                const mouseConstraint = MouseConstraint.create(engine, {
-                    mouse: mouse,
-                    constraint: {
-                        stiffness: 0.2,
-                        render: {
-                            visible: false
-                        }
-                    }
-                });
-                Composite.add(world, mouseConstraint);
-                Render.mouse = mouse;
+                // Nova posição abaixo da posição inicial
+                const newX = initialX;
+                const newY = initialY + 50;
+
+                // Atualize a posição do corpo
+                Matter.Body.setPosition(draggedBody, { x: newX, y: newY });
+
+                // Ajuste da velocidade inicial para tornar a queda mais natural
+                Matter.Body.setVelocity(draggedBody, { x: 0, y: 5 });
+
+                // força inicial para iniciar o movimento
+                Matter.Body.applyForce(draggedBody, draggedBody.position, { x: 0, y: 0.1 }); 
+
+                draggedBody = null;
             }
         });
 
@@ -224,16 +233,6 @@ function setup() {
         bodies.push(body);
         elem.id = body.id;
     }
-
-    // {
-    //     restitution:      0.5,
-    //     friction:         0,
-    //     frictionAir:      0.001,
-    //     frictionStatic:   0,
-    //     density:          1,
-    //     chamfer:          { radius: 24 },
-    //     angle:            (Math.random() * 2.000) - 1.000
-    //   }
     
     // Add walls
     Composite.add(world, [
@@ -308,8 +307,6 @@ function update() {
             + (VIEW.offsetY *2 + ( body.position.y) * VIEW.scale - bodyDom.offsetHeight/2)
             + "px )";
 
-        //bodyDom.style.top = body.position.y + "px";
-        //bodyDom.style.left = body.position.x + "px";
         bodyDom.style.transform += "rotate( " + body.angle + "rad )";
     }
     window.requestAnimationFrame(update);
