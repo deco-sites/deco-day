@@ -300,7 +300,7 @@ export default function DecoDay({
         <div id="canvas" class="absolute z-[0]"></div>
         <div class="absolute z-[0] flex flex-col pt-[85px] lg:pt-[65px] items-center gap-4 bg-black dark:bg-white h-screen w-screen">
           <div
-            class="top-[-100px] lg:right-[50px] lg:top-[-50px] absolute inset-0 flex justify-center z-[-10]"
+            class="h-full top-[-100px] lg:right-[50px] lg:top-[-50px] absolute inset-0 flex justify-center z-[-10]"
           >
             <div class="lg:opacity-50 bg-secondary w-[20rem] h-[21rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
             </div>
