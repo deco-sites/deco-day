@@ -95,7 +95,7 @@ export default function ScheduleMenu({
             <h3 class="text-albert-sans text-base leading-tight tracking-tight py-6 border-b border-black border-solid border-opacity-50">
               Agenda
             </h3>
-            <div class="flex flex-col gap-10 items-start pb-16 mb-16">
+            <div class="flex flex-col gap-10 items-start pb-16">
               <Schedule {...infoPanel.schedule} />
             </div>
           </div>
