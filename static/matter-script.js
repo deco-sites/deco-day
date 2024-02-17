@@ -2,6 +2,8 @@ import Matter from "https://esm.sh/matter-js@0.19.0";
 
 const htmlElement = document.querySelector('html');
 
+document.body.style.overflow = 'hidden';
+
 const toggles = document.querySelectorAll('[data-toggle-darkmode]');
 
 const propEditavel = document.querySelector('[data-prop-editavel]').dataset.propEditavel;

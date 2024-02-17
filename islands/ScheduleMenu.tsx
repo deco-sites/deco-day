@@ -68,7 +68,7 @@ export default function ScheduleMenu({
         class={`absolute z-[999!important] ${
           agendaVisible.value
             ? "shadow-lg shadow-left transition-transform duration-700 ease-in-out transform translate-x-0 lg:translate-x-0"
-            : "transition-transform duration-700 ease-in-out transform translate-x-full"
+            : "transition-transform duration-700 ease-in-out transform translate-x-[101%]"
         } h-full top-0 right-0 px-8 py-10 w-full lg:w-1/3 max-w-[350px] bg-white border border-gray-300 rounded p-4 shadow`}
       >
         <span
@@ -95,7 +95,7 @@ export default function ScheduleMenu({
             <h3 class="text-albert-sans text-base leading-tight tracking-tight py-6 border-b border-black border-solid border-opacity-50">
               Agenda
             </h3>
-            <div class="flex flex-col gap-10 items-start pb-16 mb-16">
+            <div class="flex flex-col gap-10 items-start md:pb-16">
               <Schedule {...infoPanel.schedule} />
             </div>
           </div>
