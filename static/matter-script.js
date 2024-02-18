@@ -9,6 +9,7 @@ const toggles = document.querySelectorAll('[data-toggle-darkmode]');
 const propEditavel = document.querySelector('[data-prop-editavel]').dataset.propEditavel;
 
 const screenSize = window.innerWidth;
+const screenSizeHeight = window.innerHeight
 
 window.addEventListener('load', () => {
     setTimeout(() => {
@@ -50,10 +51,10 @@ function setup() {
     const mobile = screenSize < 1080;
     const innerWidth = mobile ? screenSize : screenSize / 2;
     VIEW.SAFE_WIDTH = innerWidth;
-    VIEW.SAFE_HEIGHT = window.innerHeight;
-    VIEW.scale = Math.min((innerWidth) / VIEW.SAFE_WIDTH, window.innerHeight / VIEW.SAFE_HEIGHT);;
+    VIEW.SAFE_HEIGHT = screenSizeHeight;
+    VIEW.scale = Math.min((innerWidth) / VIEW.SAFE_WIDTH, screenSizeHeight / VIEW.SAFE_HEIGHT);;
     VIEW.width    = (innerWidth) / VIEW.scale;
-    VIEW.height   = window.innerHeight / VIEW.scale;
+    VIEW.height   = screenSizeHeight / VIEW.scale;
     VIEW.centerX  = VIEW.width / 2;
     VIEW.centerY  = VIEW.height / 2;
     VIEW.offsetX  = (VIEW.width - VIEW.SAFE_WIDTH) / 2 / VIEW.scale;
@@ -69,7 +70,7 @@ function setup() {
         engine: engine,
         options: {
             width: innerWidth,
-            height: window.innerHeight,
+            height: screenSizeHeight,
             showAngleIndicator: false
         }
     });
@@ -98,7 +99,10 @@ function setup() {
             posY, 
             elem.clientWidth + 5,
             elem.clientHeight + 5,
-            { render: { visible: true }, restitution: 0.4, gravity: .8, friction: 1, density: 1, chamfer: { radius } },
+            { 
+                render: { visible: true }, 
+                restitution: 0.4, gravity: .8, friction: 1, density: 1, chamfer: { radius }, 
+            },
         );
         
         // Set gravity vector in the world
@@ -111,9 +115,9 @@ function setup() {
             });
         }
         
-        let isDragging = false;
+        let isDraggingDesktop = false;
         elem.addEventListener('mousedown', (e) => {
-            isDragging = false;
+            isDraggingDesktop = false;
             const startX = e.clientX;
             const startY = e.clientY;
 
@@ -121,8 +125,8 @@ function setup() {
                 const deltaX = event.clientX - startX;
                 const deltaY = event.clientY - startY;
 
-                if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
-                    isDragging = true;
+                if (!isDraggingDesktop && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                    isDraggingDesktop = true;
                 }
             };
 
@@ -130,7 +134,7 @@ function setup() {
                 document.removeEventListener('mousemove', mouseMoveHandler);
                 document.removeEventListener('mouseup', mouseUpHandler);
 
-                if (isDragging) {
+                if (isDraggingDesktop) {
 
                     e.preventDefault();
                     const mouse = Mouse.create();
@@ -152,10 +156,10 @@ function setup() {
             document.addEventListener('mouseup', mouseUpHandler);
         });
 
-        console.log('1111',body)
         let startX, startY, draggedBody;
+        let isDraggingMobile = false;
         elem.addEventListener('touchstart', (e) => {
-            isDragging = false;
+            isDraggingMobile = false;
             draggedBody = body;
             Matter.Body.setStatic(draggedBody, true);
 
@@ -170,11 +174,11 @@ function setup() {
             const deltaX = currentX - startX;
             const deltaY = currentY - startY;
 
-            if (!isDragging && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
-                isDragging = true;
+            if (!isDraggingMobile && (Math.abs(deltaX) > 5 || Math.abs(deltaY) > 5)) {
+                isDraggingMobile = true;
             }
 
-            if (isDragging && draggedBody) {
+            if (isDraggingMobile && draggedBody) {
                 const translationX = (currentX - startX) / VIEW.scale;
                 const translationY = (currentY - startY) / VIEW.scale;
 
@@ -185,8 +189,8 @@ function setup() {
         });
 
         elem.addEventListener('touchend', () => {
-            if (isDragging && draggedBody) {
-                isDragging = false;
+            if (isDraggingMobile && draggedBody) {
+                isDraggingMobile = false;
                 // Remova o corpo estático para ativar a gravidade
                 Matter.Body.setStatic(draggedBody, false);
 
@@ -197,7 +201,7 @@ function setup() {
                 // Nova posição abaixo da posição inicial
                 const newX = initialX;
                 const newY = initialY + 50;
-
+                draggedBody.inertia = Infinity;
                 // Atualize a posição do corpo
                 Matter.Body.setPosition(draggedBody, { x: newX, y: newY });
 
@@ -206,14 +210,25 @@ function setup() {
 
                 // força inicial para iniciar o movimento
                 Matter.Body.applyForce(draggedBody, draggedBody.position, { x: 0, y: 0.1 }); 
-
-                draggedBody = null;
             }
         });
 
         elem.addEventListener('click', (e) => {
-            if (isDragging) {
+            if(draggedBody){
+                Matter.Body.setStatic(draggedBody, false);
 
+                // Defina a inércia como infinita para garantir que o corpo continue caindo
+                Matter.Body.setInertia(draggedBody, Infinity);
+        
+                // Reinicie a posição e velocidade do corpo (opcional, dependendo dos requisitos)
+                Matter.Body.setPosition(draggedBody, { x: startX, y: startY });
+                Matter.Body.setVelocity(draggedBody, { x: 0, y: 0 });
+        
+                // Limpe a referência ao corpo arrastado
+                draggedBody = null;
+            }
+
+            if (isDraggingDesktop) {
                 e.preventDefault();
                 const mouse = Mouse.create();
                 const mouseConstraint = MouseConstraint.create(engine, {
