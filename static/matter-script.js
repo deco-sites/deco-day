@@ -326,28 +326,7 @@ function update() {
     }
     window.requestAnimationFrame(update);
 }
-
-// Refresh page every screen resize
-
-function debounce(func, wait, immediate) {
-    var timeout;
-    return function() {
-      var context = this, args = arguments;
-      clearTimeout(timeout);
-      timeout = setTimeout(function() {
-        timeout = null;
-        if (!immediate) func.apply(context, args);
-      }, wait);
-      if (immediate && !timeout) func.apply(context, args);
-    };
-  }
   
-  var refreshWorld = debounce(function() {
-    location.reload();
-  }, 500);
-  
-window.addEventListener('resize', refreshWorld);
-
 // Function to "explode" elements with form submission
 document.querySelector('form').addEventListener('submit', function(event) {
     event.preventDefault(); 
