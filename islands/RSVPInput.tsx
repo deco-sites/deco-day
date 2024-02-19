@@ -84,7 +84,7 @@ export default function RSVPInput({
         </UiButton>
       </form>
       {feedbackMessage.value && (
-        <span class="font-normal text-white text-center">
+        <span class="font-normal text-white dark:text-black text-center">
           {feedbackMessage.value.message}
         </span>
       )}
