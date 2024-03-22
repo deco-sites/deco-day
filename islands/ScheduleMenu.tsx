@@ -55,10 +55,8 @@ export default function ScheduleMenu({
         <UiButton
           onClick={toggleAgenda}
           class={`border-0 h-[40px!important] font-normal top-4 right-4 text-[16px] leading-[150%] bg-white dark:bg-black text-[#0D1717] dark:text-white px-4 py-2 rounded-[100px] ${
-            agendaVisible.value 
-            ? "invisible"
-            : "visible"
-        }`}
+            agendaVisible.value ? "invisible" : "visible"
+          }`}
         >
           Agenda
         </UiButton>
