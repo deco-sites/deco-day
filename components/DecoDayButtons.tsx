@@ -17,7 +17,7 @@ export default function DecoDayButtons({
 }: Props) {
   return (
     <>
-      <div class="flex flex-row items-center justify-center gap-5 lg:gap-8 leading-[150%] lg:mb-5">
+      <div class="flex flex-row items-center justify-center gap-5 lg:gap-8 leading-[150%] mb-2.5 lg:mb-7">
         {infoPanel.topButtons.map(({ icon, label }, index) => (
           <>
             <div

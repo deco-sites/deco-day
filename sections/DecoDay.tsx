@@ -299,7 +299,7 @@ export default function DecoDay({
           isMobile={isMobile}
         />
         <div id="canvas" class="absolute z-[0]"></div>
-        <div class="absolute z-[0] flex flex-col pt-28 lg:pt-8 items-center gap-2 lg:gap-4 bg-black dark:bg-white h-full w-screen box-border">
+        <div class="absolute z-[0] flex flex-col pt-28 lg:pt-8 items-center bg-black dark:bg-white h-full w-screen box-border">
           <div class="h-full top-[80px] lg:right-[50px] lg:top-[-50px] absolute inset-0 flex justify-center z-[-10]">
             <div class="lg:opacity-50 bg-secondary w-[21rem] h-[17rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
             </div>
