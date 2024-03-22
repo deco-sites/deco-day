@@ -29,7 +29,7 @@ export default function DecoDayButtons({
               <span>{label}</span>
             </div>
             {index !== infoPanel.topButtons.length - 1 && (
-              <div class="h-full text-white border dark:text-black w-[0.5px]">
+              <div class="h-full text-white border dark:border-black w-[0.5px]">
               </div>
             )}
           </>
