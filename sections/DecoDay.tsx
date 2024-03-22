@@ -14,9 +14,9 @@ import SocialLinks, {
 } from "deco-sites/deco-day/sections/SocialLinks.tsx";
 import RSVPInput from "deco-sites/deco-day/islands/RSVPInput.tsx";
 import ScheduleMenu from "deco-sites/deco-day/islands/ScheduleMenu.tsx";
-import DecoDayButtons from "deco-sites/deco-day/islands/DecoDayButtons.tsx";
+import DecoDayButtons from "../components/DecoDayButtons.tsx";
+import Sponsors from "../components/Sponsors.tsx";
 import { AppContext } from "deco-sites/deco-day/apps/site.ts";
-
 
 /**
  * @title ToggleDarkMode
@@ -209,14 +209,14 @@ interface Header {
 export interface Props {
   animationElements: AnimationElement[];
   /**
- * @description Mobile Elements
- */
+   * @description Mobile Elements
+   */
   animationElementsMobile: AnimationElement[];
   /**
- * @description Select Gravity Level - 1(super slow) to 7(super fast) | Default is 4(Earths Gravity)
- */
+   * @description Select Gravity Level - 1(super slow) to 7(super fast) | Default is 4(Earths Gravity)
+   */
   /** @default 4 */
-  gravitySensation?: 1 | 2 | 3 | 4 | 5 | 6 | 7 ;
+  gravitySensation?: 1 | 2 | 3 | 4 | 5 | 6 | 7;
   /** @format html */
   title?: string;
   infoPanel: {
@@ -227,6 +227,7 @@ export interface Props {
     topButtons: TopButton[];
     ctaText: string;
   };
+  sponsors?: AvailableIcons[];
   emailInput: {
     successMessage?: string;
     errorMessage?: string;
@@ -253,23 +254,23 @@ export const loader = async (
   req: Request,
   ctx: AppContext,
 ) => {
-
   const device = ctx.device;
 
-  return{
+  return {
     ...props,
-    isMobile: device
-  } 
-}
+    isMobile: device,
+  };
+};
 
 export default function DecoDay({
   animationElements,
   animationElementsMobile,
   infoPanel,
+  sponsors,
   emailInput,
   isMobile,
   gravitySensation,
-  title
+  title,
 }: Omit<Props, "isMobile"> & {
   animationElements: AnimationElement[];
   animationElementsMobile?: AnimationElement[];
@@ -282,6 +283,7 @@ export default function DecoDay({
     topButtons: TopButton[];
     ctaText: string;
   };
+  sponsors: AvailableIcons[];
   emailInput: {
     successMessage?: string;
     errorMessage?: string;
@@ -289,7 +291,6 @@ export default function DecoDay({
   };
   isMobile: string;
 }) {
-
   return (
     <div class="flex flex-col lg:flex-row h-screen w-screen overflow-hidden">
       <div class="relative h-screen lg:h-screen w-screen overflow-clip">
@@ -298,32 +299,31 @@ export default function DecoDay({
           isMobile={isMobile}
         />
         <div id="canvas" class="absolute z-[0]"></div>
-        <div class="absolute z-[0] flex flex-col pt-[85px] lg:pt-[65px] items-center gap-4 bg-black dark:bg-white h-full w-screen box-border">
-          <div
-            class="h-full top-[-100px] lg:right-[50px] lg:top-[-50px] absolute inset-0 flex justify-center z-[-10]"
-          >
-            <div class="lg:opacity-50 bg-secondary w-[20rem] h-[21rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
+        <div class="absolute z-[0] flex flex-col pt-28 lg:pt-8 items-center bg-black dark:bg-white h-full w-screen box-border">
+          <div class="h-full top-[80px] lg:right-[50px] lg:top-[-50px] absolute inset-0 flex justify-center z-[-10]">
+            <div class="lg:opacity-50 bg-secondary w-[21rem] h-[17rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
             </div>
-            <div class="lg:opacity-50 bg-accent w-[18rem] h-[21rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
+            <div class="lg:opacity-50 bg-accent w-[16rem] h-[19rem] lg:w-96 lg:h-96 rounded-full blur-[200px]">
             </div>
           </div>
+          <DecoDayButtons infoPanel={infoPanel} />
           <img
             src="../2-0-lightmode.png"
-            class="w-[80vw] max-w-[234px] lg:max-w-[322px] 2xl:max-w-[342px] hidden dark:inline"
+            class="w-[80vw] max-w-[303px] lg:max-w-[322px] 2xl:max-w-[342px] hidden dark:inline"
           />
           <img
             src="../2-0-darkmode.png"
-            class="w-[80vw] max-w-[234px] lg:max-w-[322px] 2xl:max-w-[342px] inline dark:hidden"
+            class="w-[80vw] max-w-[303px] lg:max-w-[322px] 2xl:max-w-[342px] inline dark:hidden"
           />
-          <div class="flex flex-col items-center lg:w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
+          <div class="flex flex-col items-center w-full lg:w-1/2 lg:min-w-[674px] max-w-[674px] gap-6">
+            <Sponsors sponsors={sponsors} />
             <div
               class="inline px-4 lg:px-0 text-white dark:text-black text-center w-full text-[18px] lg:text-xl leading-[150%]"
-                dangerouslySetInnerHTML={{
-                  __html: title,
-                }}
+              dangerouslySetInnerHTML={{
+                __html: title,
+              }}
             />
-            <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 pb-10 w-full">
-              <DecoDayButtons infoPanel={infoPanel}/>
+            <div class="px-4 lg:px-0 z-10 flex flex-col items-center justify-center gap-6 w-full">
               <RSVPInput
                 placeholder={emailInput?.placeholder}
                 errorMessage={emailInput?.errorMessage}
@@ -332,40 +332,43 @@ export default function DecoDay({
           </div>
         </div>
         <div id="floatingElements" class="absolute z-0 invisible">
-        {isMobile === 'desktop'
-            ? animationElements.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
-            : animationElementsMobile.map((elem: AnimationElement) => AnimatedElementMap[elem.id](elem))
-        }
+          {isMobile === "desktop"
+            ? animationElements.map((elem: AnimationElement) =>
+              AnimatedElementMap[elem.id](elem)
+            )
+            : animationElementsMobile.map((elem: AnimationElement) =>
+              AnimatedElementMap[elem.id](elem)
+            )}
         </div>
       </div>
       <script type="module" src="/matter-script.js" />
       {gravitySensation === 1 && (
-      <div class="hidden" data-prop-editavel="0.1">
-      </div>
+        <div class="hidden" data-prop-editavel="0.1">
+        </div>
       )}
       {gravitySensation === 2 && (
-          <div class="hidden" data-prop-editavel="0.3">
-          </div>
+        <div class="hidden" data-prop-editavel="0.3">
+        </div>
       )}
       {gravitySensation === 3 && (
-          <div class="hidden" data-prop-editavel="0.6">
-          </div>
+        <div class="hidden" data-prop-editavel="0.6">
+        </div>
       )}
       {gravitySensation === 4 && (
-          <div class="hidden" data-prop-editavel="1">
-          </div>
+        <div class="hidden" data-prop-editavel="1">
+        </div>
       )}
       {gravitySensation === 5 && (
-          <div class="hidden" data-prop-editavel="1.5">
-          </div>
+        <div class="hidden" data-prop-editavel="1.5">
+        </div>
       )}
       {gravitySensation === 6 && (
-          <div class="hidden" data-prop-editavel="2">
-          </div>
+        <div class="hidden" data-prop-editavel="2">
+        </div>
       )}
       {gravitySensation === 7 && (
-          <div class="hidden" data-prop-editavel="3">
-          </div>
+        <div class="hidden" data-prop-editavel="3">
+        </div>
       )}
     </div>
   );

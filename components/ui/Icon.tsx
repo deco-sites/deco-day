@@ -2,6 +2,10 @@ import { asset } from "$fresh/runtime.ts";
 import type { JSX } from "preact";
 
 export type AvailableIcons =
+  | "AlgoliaLogo"
+  | "LiveSEOLogo"
+  | "TrinioLogo"
+  | "VtexLogo"
   | "ArrowsPointingOut"
   | "DecoLogo"
   | "DecoLogoMobile"
@@ -31,6 +35,7 @@ export type AvailableIcons =
   | "Phone"
   | "Pix"
   | "Plus"
+  | "QualityDigitalLogo"
   | "QuestionMarkCircle"
   | "Return"
   | "Ruler"
